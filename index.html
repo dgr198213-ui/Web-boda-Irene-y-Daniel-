@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { -webkit-font-smoothing: antialiased; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(10px); opacity: 1; } }
+  @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+  @keyframes flipnum { 0% { transform: rotateX(90deg); opacity: 0; } 100% { transform: rotateX(0); opacity: 1; } }
+  @keyframes drift { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-14px) translateX(8px); } 100% { transform: translateY(0) translateX(0); } }
+  @keyframes glow { 0%, 100% { opacity: 0.45; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.04); } }
+  @keyframes sway { 0%, 100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(3deg) translateY(-6px); } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+  @media (max-width: 767px) {
+    .__desktopNav { display: none !important; }
+    nav button[aria-label="Menú"] { display: flex !important; }
+  }
+</style>
+</helmet>
+
+<div style="{{ pageStyle }}">
+
+  <div style="{{ ambienceWrapStyle }}">
+    <sc-for list="{{ scenes }}" as="scene" hint-placeholder-count="6">
+      <div style="{{ scene.style }}"></div>
+    </sc-for>
+    <div style="{{ vignetteStyle }}"></div>
+  </div>
+  <canvas ref="{{ canvasRef }}" style="{{ canvasStyle }}"></canvas>
+
+  <nav style="{{ navStyle }}" data-screen-label="NAV">
+    <div style="font-family:'Great Vibes',cursive;font-size:26px;color:{{ c.salvia500 }};cursor:pointer;" onClick="{{ scrollToTop }}">I&amp;D</div>
+    <div style="display:flex;gap:32px;align-items:center;" class="__desktopNav">
+      <a href="#historia" style="{{ navLinkStyle }}">Historia</a>
+      <a href="#manada" style="{{ navLinkStyle }}">La manada</a>
+      <a href="#lugar" style="{{ navLinkStyle }}">Lugar</a>
+      <a href="#agenda" style="{{ navLinkStyle }}">Agenda</a>
+      <a href="#rsvp" style="{{ navLinkStyle }}">RSVP</a>
+      <a href="#info" style="{{ navLinkStyle }}">Info</a>
+    </div>
+    <button onClick="{{ toggleMenu }}" style="{{ hamburgerStyle }}" aria-label="Menú">
+      <span style="{{ hamburgerLine1 }}"></span>
+      <span style="{{ hamburgerLine2 }}"></span>
+      <span style="{{ hamburgerLine3 }}"></span>
+    </button>
+  </nav>
+
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ mobileMenuStyle }}">
+      <a href="#historia" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">Historia</a>
+      <a href="#manada" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">La manada</a>
+      <a href="#lugar" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">Lugar</a>
+      <a href="#agenda" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">Agenda</a>
+      <a href="#rsvp" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">RSVP</a>
+      <a href="#info" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">Info</a>
+    </div>
+  </sc-if>
+
+  <!-- HERO -->
+  <section id="hero" ref="{{ heroRef }}" data-screen-label="HERO" style="{{ heroSectionStyle }}">
+    <div style="{{ heroMediaStyle }}">
+      <video ref="{{ heroVideoRef }}" src="uploads/gemini_generated_video_375292e2.mp4" autoPlay="{{ true }}" muted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" preload="auto" disablePictureInPicture="{{ true }}" style="{{ heroVideoStyle }}"></video>
+    </div>
+    <div style="{{ heroOverlayStyle }}"></div>
+    <div style="{{ heroFogStyle }}"></div>
+    <div style="{{ heroGlowA }}"></div>
+    <div style="{{ heroGlowB }}"></div>
+    <div style="{{ heroGlowC }}"></div>
+    <div style="{{ heroContentStyle }}">
+      <div style="{{ heroKickerStyle }}">Sierra Norte de Guadalajara</div>
+      <h1 style="{{ heroTitleStyle }}">Irene &amp; Daniel</h1>
+      <p style="{{ heroDateStyle }}">4 de septiembre de 2027</p>
+      <p style="{{ heroLocStyle }}">Finca Aldea Tejera Negra · Campillo de Ranas</p>
+      <a href="#historia" style="{{ heroCtaStyle }}">Comenzar experiencia</a>
+    </div>
+    <div style="{{ scrollIndicatorStyle }}">
+      <div style="width:1px;height:40px;background:{{ c.salvia500 }};opacity:0.6;"></div>
+      <div style="{{ scrollDotStyle }}"></div>
+    </div>
+  </section>
+
+  <!-- HISTORIA -->
+  <section id="historia" ref="{{ historiaRef }}" data-screen-label="HISTORIA" style="{{ sectionWrapStyle }}">
+    <div style="{{ accHistoriaA }}"></div>
+    <div style="{{ accHistoriaB }}"></div>
+    <div style="{{ accHistoriaC }}"></div>
+    <div style="{{ accHistoriaD }}"></div>
+    <div style="{{ sectionInnerStyle }}">
+      <div style="{{ historiaEyebrowStyle }}">Nuestra historia</div>
+      <h2 style="{{ historiaH2Style }}">Dos vidas, un mismo camino</h2>
+      <div style="{{ ornamentStyle }}">
+        <div style="{{ ornamentLine }}"></div>
+        <div style="{{ ornamentDiamond }}"></div>
+        <div style="{{ ornamentDot }}"></div>
+        <div style="{{ ornamentDiamond }}"></div>
+        <div style="{{ ornamentLine }}"></div>
+      </div>
+      <div style="height:48px;"></div>
+      <sc-for list="{{ timeline }}" as="item" hint-placeholder-count="4">
+        <div style="{{ item.rowStyle }}">
+          <div style="{{ item.imgWrapStyle }}">
+            <div style="{{ item.photoBgStyle }}"></div>
+            <sc-if value="{{ item.noPhoto }}" hint-placeholder-val="{{ true }}">
+              <div style="{{ timelineImgStripes }}"></div>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Inter,sans-serif;font-size:10px;letter-spacing:0.08em;color:{{ phLabelColor }};opacity:0.55;padding:8px;">{{ item.photoLabel }}</div>
+            </sc-if>
+          </div>
+          <div style="{{ item.textWrapStyle }}">
+            <div style="{{ timelineDateStyle }}">{{ item.date }}</div>
+            <h3 style="{{ timelineTitleStyle }}">{{ item.title }}</h3>
+            <p style="{{ timelineDescStyle }}">{{ item.description }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- MASCOTAS -->
+  <section id="manada" ref="{{ manadaRef }}" data-screen-label="MANADA" style="{{ manadaSectionStyle }}">
+    <div style="{{ accManadaA }}"></div>
+    <div style="{{ accManadaB }}"></div>
+    <div style="{{ accManadaC }}"></div>
+    <div style="{{ sectionInnerStyle }}">
+      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+        <div style="{{ manadaEyebrowStyle }}">La manada</div>
+        <h2 style="{{ manadaH2Style }}">Tres testigos de cuatro patas</h2>
+        <div style="{{ ornamentCenteredStyle }}">
+          <div style="{{ ornamentLine }}"></div>
+          <div style="{{ ornamentDiamond }}"></div>
+          <div style="{{ ornamentDot }}"></div>
+          <div style="{{ ornamentDiamond }}"></div>
+          <div style="{{ ornamentLine }}"></div>
+        </div>
+        <p style="{{ manadaLeadStyle }}">Antes de que existiera una fecha, ya éramos cinco. Bruno, Rocco y Junior llevan años repartiendo pelo por casa, robando sitio en la cama y acompañando cada paseo largo de esta historia.</p>
+      </div>
+      <div style="height:64px;"></div>
+      <div style="{{ petsGridStyle }}">
+        <sc-for list="{{ pets }}" as="pet" hint-placeholder-count="3">
+          <div style="{{ pet.cardStyle }}">
+            <div style="{{ pet.photoWrapStyle }}">
+            <div style="{{ pet.leafStyle }}"></div>
+            <div style="{{ pet.photoStyle }}">
+              <div style="{{ pet.photoBgStyle }}"></div>
+              <sc-if value="{{ pet.noPhoto }}" hint-placeholder-val="{{ true }}">
+                <div style="{{ petStripesStyle }}"></div>
+                <div style="position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;text-align:center;font-family:Inter,sans-serif;font-size:10px;letter-spacing:0.08em;color:{{ phLabelColor }};opacity:0.55;padding:14px;">{{ pet.photoLabel }}</div>
+              </sc-if>
+            </div>
+            </div>
+            <div style="{{ petNameStyle }}">{{ pet.name }}</div>
+            <div style="{{ petBreedStyle }}">{{ pet.breed }}</div>
+            <p style="{{ petDescStyle }}">{{ pet.description }}</p>
+          </div>
+        </sc-for>
+      </div>
+      <p style="{{ manadaFootnoteStyle }}">Y sí, los tres vienen a la boda: son los invitados más especiales de la lista.</p>
+    </div>
+  </section>
+
+  <!-- LUGAR -->
+  <section id="lugar" ref="{{ lugarRef }}" data-screen-label="LUGAR" style="{{ lugarSectionStyle }}">
+    <div style="{{ accLugarA }}"></div>
+    <div style="{{ accLugarB }}"></div>
+    <div style="{{ accLugarC }}"></div>
+    <div style="{{ sectionInnerStyle }}">
+      <div style="{{ lugarEyebrowStyle }}">La finca</div>
+      <h2 style="{{ lugarH2Style }}">Entre bosques y pizarra</h2>
+      <p style="{{ lugarLeadStyle }}">Finca Aldea Tejera Negra es un rincón privado en la Sierra Norte de Guadalajara, donde la arquitectura negra de pizarra se funde con el bosque que la rodea. Un fin de semana completo, en exclusiva para nosotros.</p>
+      <div style="height:56px;"></div>
+      <div style="{{ lugarGridStyle }}">
+        <sc-for list="{{ fincaPhotos }}" as="photo" hint-placeholder-count="3">
+          <div style="{{ fincaPhotoStyle }}">
+            <div style="{{ photo.bgStyle }}"></div>
+            <sc-if value="{{ photo.noPhoto }}" hint-placeholder-val="{{ true }}">
+              <div style="{{ fincaPhotoStripesStyle }}"></div>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Inter,sans-serif;font-size:11px;letter-spacing:0.08em;color:{{ phLabelColor }};opacity:0.55;padding:12px;">{{ photo.label }}</div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="height:56px;"></div>
+      <div style="{{ lugarInfoGrid }}">
+        <div style="{{ lugarInfoCard }}">
+          <div style="{{ lugarInfoTitle }}">Cómo llegar</div>
+          <p style="{{ lugarInfoText }}">Acceso por carretera desde Guadalajara (aprox. 1h 15min). Indicaciones detalladas en la confirmación de asistencia.</p>
+        </div>
+        <div style="{{ lugarInfoCard }}">
+          <div style="{{ lugarInfoTitle }}">Parking</div>
+          <p style="{{ lugarInfoText }}">La finca dispone de aparcamiento privado gratuito para todos los invitados.</p>
+        </div>
+        <div style="{{ lugarInfoCard }}">
+          <div style="{{ lugarInfoTitle }}">Qué llevar</div>
+          <p style="{{ lugarInfoText }}">Calzado cómodo para terreno natural y una chaqueta ligera — las noches en la sierra refrescan.</p>
+        </div>
+      </div>
+      <div style="height:56px;"></div>
+      <div style="{{ mapPlaceholderStyle }}">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+          <div style="font-family:Inter,sans-serif;font-size:12px;letter-spacing:0.1em;color:{{ phLabelColor }};opacity:0.6;text-transform:uppercase;">[ mapa interactivo · Google Maps ]</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:{{ phLabelStrong }};">Campillo de Ranas, Guadalajara</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENDA -->
+  <section id="agenda" ref="{{ agendaRef }}" data-screen-label="AGENDA" style="{{ sectionWrapStyle }}">
+    <div style="{{ accAgendaA }}"></div>
+    <div style="{{ accAgendaB }}"></div>
+    <div style="{{ accAgendaC }}"></div>
+    <div style="{{ sectionInnerStyle }}">
+      <div style="{{ agendaEyebrowStyle }}">Agenda</div>
+      <h2 style="{{ agendaH2Style }}">Un fin de semana entero</h2>
+      <div style="{{ ornamentStyle }}">
+        <div style="{{ ornamentLine }}"></div>
+        <div style="{{ ornamentDiamond }}"></div>
+        <div style="{{ ornamentDot }}"></div>
+        <div style="{{ ornamentDiamond }}"></div>
+        <div style="{{ ornamentLine }}"></div>
+      </div>
+      <div style="height:48px;"></div>
+      <sc-for list="{{ agendaDays }}" as="day" hint-placeholder-count="3">
+        <div style="{{ day.cardStyle }}">
+          <div style="{{ day.headerStyle }}">{{ day.label }}</div>
+          <div style="{{ agendaEventsWrap }}">
+            <sc-for list="{{ day.events }}" as="ev" hint-placeholder-count="2">
+              <div style="{{ agendaEventRow }}">
+                <div style="{{ agendaDotStyle }}"></div>
+                <div style="{{ agendaTimeStyle }}">{{ ev.time }}</div>
+                <div style="{{ agendaEventTextWrap }}">
+                  <div style="{{ agendaEventName }}">{{ ev.name }}</div>
+                  <sc-if value="{{ ev.desc }}" hint-placeholder-val="{{ false }}">
+                    <div style="{{ agendaEventDesc }}">{{ ev.desc }}</div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <div style="height:56px;"></div>
+      <div style="{{ countdownWrapStyle }}">
+        <div style="{{ countdownTitleStyle }}">Faltan para el gran día</div>
+        <div style="{{ countdownBlocksStyle }}">
+          <div style="{{ countdownBlockStyle }}">
+            <div key="{{ countdown.days }}" style="{{ countdownNumStyle }}">{{ countdown.days }}</div>
+            <div style="{{ countdownLabelStyle }}">Días</div>
+          </div>
+          <div style="{{ countdownBlockStyle }}">
+            <div key="{{ countdown.hours }}" style="{{ countdownNumStyle }}">{{ countdown.hours }}</div>
+            <div style="{{ countdownLabelStyle }}">Horas</div>
+          </div>
+          <div style="{{ countdownBlockStyle }}">
+            <div key="{{ countdown.minutes }}" style="{{ countdownNumStyle }}">{{ countdown.minutes }}</div>
+            <div style="{{ countdownLabelStyle }}">Min</div>
+          </div>
+          <div style="{{ countdownBlockStyle }}">
+            <div key="{{ countdown.seconds }}" style="{{ countdownNumStyle }}">{{ countdown.seconds }}</div>
+            <div style="{{ countdownLabelStyle }}">Seg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section id="rsvp" ref="{{ rsvpRef }}" data-screen-label="RSVP" style="{{ rsvpSectionStyle }}">
+    <div style="{{ accRsvpA }}"></div>
+    <div style="{{ accRsvpB }}"></div>
+    <div style="{{ accRsvpC }}"></div>
+    <div style="{{ sectionInnerNarrowStyle }}">
+      <div style="{{ rsvpEyebrowStyle }}">Confirmación</div>
+      <h2 style="{{ rsvpH2Style }}">Contamos contigo</h2>
+      <p style="{{ rsvpLeadStyle }}">Por favor confirma tu asistencia antes del 1 de julio de 2027.</p>
+      <div style="height:40px;"></div>
+      <sc-if value="{{ rsvpNotSubmitted }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ handleRsvpSubmit }}" style="{{ rsvpFormStyle }}">
+          <div style="{{ formFieldStyle }}">
+            <label style="{{ formLabelStyle }}">Nombre completo</label>
+            <input type="text" required="{{ true }}" value="{{ rsvp.nombre }}" onChange="{{ updateRsvpNombre }}" style="{{ inputStyle }}" placeholder="Tu nombre" />
+          </div>
+          <div style="{{ formFieldStyle }}">
+            <label style="{{ formLabelStyle }}">Confirmo asistencia a</label>
+            <div style="{{ checkboxRowStyle }}">
+              <label style="{{ checkboxLabelStyle }}">
+                <input type="checkbox" checked="{{ rsvp.preboda }}" onChange="{{ toggleRsvpPreboda }}" style="{{ checkboxInputStyle }}" />
+                Preboda · Vie 3 Sept
+              </label>
+              <label style="{{ checkboxLabelStyle }}">
+                <input type="checkbox" checked="{{ rsvp.boda }}" onChange="{{ toggleRsvpBoda }}" style="{{ checkboxInputStyle }}" />
+                Boda · Sáb 4 Sept
+              </label>
+              <label style="{{ checkboxLabelStyle }}">
+                <input type="checkbox" checked="{{ rsvp.comida }}" onChange="{{ toggleRsvpComida }}" style="{{ checkboxInputStyle }}" />
+                Comida despedida · Dom 5 Sept
+              </label>
+            </div>
+          </div>
+          <div style="{{ formFieldStyle }}">
+            <label style="{{ formLabelStyle }}">Preferencia de menú</label>
+            <div style="{{ checkboxRowStyle }}">
+              <label style="{{ checkboxLabelStyle }}">
+                <input type="radio" name="menu" checked="{{ rsvpMenuIsCarne }}" onChange="{{ setRsvpMenuCarne }}" style="{{ checkboxInputStyle }}" />
+                Carne
+              </label>
+              <label style="{{ checkboxLabelStyle }}">
+                <input type="radio" name="menu" checked="{{ rsvpMenuIsPescado }}" onChange="{{ setRsvpMenuPescado }}" style="{{ checkboxInputStyle }}" />
+                Pescado
+              </label>
+            </div>
+          </div>
+          <div style="{{ formFieldStyle }}">
+            <label style="{{ formLabelStyle }}">Alergias o intolerancias</label>
+            <textarea value="{{ rsvp.alergias }}" onChange="{{ updateRsvpAlergias }}" style="{{ textareaStyle }}" placeholder="Opcional"></textarea>
+          </div>
+          <div style="{{ formFieldStyle }}">
+            <label style="{{ formLabelStyle }}">Comentarios</label>
+            <textarea value="{{ rsvp.comentarios }}" onChange="{{ updateRsvpComentarios }}" style="{{ textareaStyle }}" placeholder="Opcional"></textarea>
+          </div>
+          <button type="submit" style="{{ submitButtonStyle }}">Confirmar asistencia</button>
+        </form>
+      </sc-if>
+      <sc-if value="{{ rsvpSubmitted }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ rsvpSuccessStyle }}">
+          <div style="{{ rsvpSuccessIcon }}">✓</div>
+          <div style="{{ rsvpSuccessTitle }}">¡Confirmado, gracias!</div>
+          <p style="{{ rsvpSuccessText }}">Nos hace muy felices contar contigo. Nos vemos en la Sierra Norte.</p>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <!-- REGALO -->
+  <sc-if value="{{ showRegalo }}" hint-placeholder-val="{{ true }}">
+    <section data-screen-label="REGALO" style="{{ regaloSectionStyle }}">
+      <div style="{{ accRegaloA }}"></div>
+      <div style="{{ accRegaloB }}"></div>
+      <div style="{{ sectionInnerNarrowStyle }}">
+          <div style="{{ ornamentCenteredStyle }}">
+          <div style="{{ ornamentLine }}"></div>
+          <div style="{{ ornamentDot }}"></div>
+          <div style="{{ ornamentLine }}"></div>
+        </div>
+      <div style="{{ giftQuoteStyle }}">"Lo más importante es compartir este día con vosotros."</div>
+        <p style="{{ giftTextStyle }}">Si deseáis hacernos un regalo, habrá una caja destinada para ello situada en la mesa presidencial.</p>
+      </div>
+    </section>
+  </sc-if>
+
+  <!-- INFO UTIL -->
+  <section id="info" ref="{{ infoRef }}" data-screen-label="INFO UTIL" style="{{ sectionWrapStyle }}">
+    <div style="{{ accInfoA }}"></div>
+    <div style="{{ accInfoB }}"></div>
+    <div style="{{ accInfoC }}"></div>
+    <div style="{{ sectionInnerStyle }}">
+      <div style="{{ infoEyebrowStyle }}">Información útil</div>
+      <h2 style="{{ infoH2Style }}">Para tu estancia</h2>
+      <div style="height:56px;"></div>
+      <div style="{{ infoGridStyle }}">
+        <sc-for list="{{ infoCards }}" as="card" hint-placeholder-count="4">
+          <div style="{{ infoCardStyle }}">
+            <div style="{{ infoCardTitle }}">{{ card.title }}</div>
+            <p style="{{ infoCardText }}">{{ card.text }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <footer style="{{ footerStyle }}">
+    <div style="{{ accFooter }}"></div>
+    <div style="{{ accFooterL }}"></div>
+    <div style="{{ accFooterR }}"></div>
+    <div style="{{ footerNameStyle }}">Irene &amp; Daniel</div>
+    <div style="{{ footerTextStyle }}">Gracias por acompañarnos en este camino.</div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;darkMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Tema&quot;},&quot;showRegalo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Secciones&quot;},&quot;particleDensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:2,&quot;step&quot;:0.2,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Atmósfera&quot;},&quot;garlandIntensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.4,&quot;min&quot;:0,&quot;max&quot;:1.6,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Atmósfera&quot;}}">
+const PALETTE_DARK = {
+  bg: '#1A1D1F', bg2: '#2A2D30', border: '#3C3F42',
+  arena50: '#FAF8F5', arena100: '#F5F2ED',
+  salvia500: '#8FA89E', salvia300: '#B8C9C1', salvia700: '#6B8278',
+  dorado400: '#D4AF77', dorado200: '#E8D4B0',
+};
+
+const PALETTE_LIGHT = {
+  bg: '#3B3134', bg2: '#6E5F62', border: '#EFE0DF',
+  arena50: '#FFFCFC', arena100: '#FDF6F5',
+  salvia500: '#8AA096', salvia300: '#6F8A80', salvia700: '#6B8278',
+  dorado400: '#BF8B65', dorado200: '#D9B294',
+};
+
+const WEDDING_DATE = new Date('2027-09-04T17:30:00');
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+const PHOTO_PATHS = [
+  'uploads/IMG-20260728-WA0023.jpg',
+  'uploads/IMG-20260728-WA0004.jpg',
+  'uploads/IMG-20260130-WA0018.jpg',
+  'uploads/IMG-20260728-WA0029.jpg',
+  'uploads/IMG-20260728-WA0012.jpg',
+  'uploads/instalaciones-aldea-tejera-negra-FOTO-13-min.jpg',
+  'uploads/instalaciones-aldea-tejera-negra-FOTO-1-min.jpg',
+  'uploads/instalaciones-aldea-tejera-negra-FOTO-25-min.jpg',
+];
+
+class Component extends DCLogic {
+  state = {
+    menuOpen: false,
+    scrolled: false,
+    isMobile: typeof window !== 'undefined' && window.innerWidth < 768,
+    activeScene: 0,
+    historiaVisible: false,
+    manadaVisible: false,
+    lugarVisible: false,
+    agendaVisible: false,
+    rsvpVisible: false,
+    infoVisible: false,
+    countdown: { days: '00', hours: '00', minutes: '00', seconds: '00' },
+    rsvp: { nombre: '', preboda: true, boda: true, comida: true, menu: 'carne', alergias: '', comentarios: '' },
+    rsvpSubmitted: false,
+    brokenPhotos: {},
+  };
+
+  canvasRef = React.createRef();
+  heroRef = React.createRef();
+  heroVideoRef = React.createRef();
+  historiaRef = React.createRef();
+  manadaRef = React.createRef();
+  lugarRef = React.createRef();
+  agendaRef = React.createRef();
+  rsvpRef = React.createRef();
+  infoRef = React.createRef();
+
+  componentDidMount() {
+    this._playHero = () => {
+      const v = this.heroVideoRef.current;
+      if (!v) return;
+      v.muted = true;
+      v.defaultMuted = true;
+      v.playsInline = true;
+      v.loop = true;
+      const p = v.play();
+      if (p && p.catch) p.catch(() => {});
+    };
+    setTimeout(this._playHero, 0);
+    setTimeout(this._playHero, 600);
+    ['click', 'touchstart', 'scroll', 'keydown'].forEach(ev =>
+      document.addEventListener(ev, this._playHero, { once: true, passive: true })
+    );
+    this._onVis = () => { if (document.hidden) { cancelAnimationFrame(this._raf); } else if (this._tick) { this._raf = requestAnimationFrame(this._tick); } };
+    document.addEventListener('visibilitychange', this._onVis);
+    this._tick();
+    this._interval = setInterval(this._tick, 1000);
+    this._observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        if (entry.target === this.historiaRef.current) this.setState({ historiaVisible: true });
+        if (entry.target === this.manadaRef.current) this.setState({ manadaVisible: true });
+        if (entry.target === this.lugarRef.current) this.setState({ lugarVisible: true });
+        if (entry.target === this.agendaRef.current) this.setState({ agendaVisible: true });
+        if (entry.target === this.rsvpRef.current) this.setState({ rsvpVisible: true });
+        if (entry.target === this.infoRef.current) this.setState({ infoVisible: true });
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
+    [this.historiaRef, this.manadaRef, this.lugarRef, this.agendaRef, this.rsvpRef, this.infoRef].forEach((r) => {
+      if (r.current) this._observer.observe(r.current);
+    });
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onResize, { passive: true });
+    this._startParticles();
+    this._checkPhotos();
+  }
+
+  _checkPhotos() {
+    PHOTO_PATHS.forEach((src) => {
+      const img = new Image();
+      img.onerror = () => this.setState((s) => (s.brokenPhotos[src] ? null : { brokenPhotos: { ...s.brokenPhotos, [src]: true } }));
+      img.src = src;
+    });
+  }
+
+  _startParticles() {
+    const canvas = this.canvasRef.current;
+    if (!canvas) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w = 0, h = 0;
+    const resize = () => {
+      w = window.innerWidth; h = window.innerHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    this._canvasResize = resize;
+    window.addEventListener('resize', resize, { passive: true });
+
+    const lightTheme = !(this.props.darkMode ?? false);
+    const density = (this.props.particleDensity ?? 0.6) * (window.innerWidth < 768 ? 0.5 : 1);
+    const moteCount = Math.round(38 * density);
+    const leafCount = Math.round(16 * density);
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    const motes = Array.from({ length: moteCount }, () => ({
+      x: rand(0, w), y: rand(0, h), r: rand(0.7, 2.1), sp: rand(0.08, 0.35),
+      sway: rand(0.3, 1.1), phase: rand(0, Math.PI * 2), a: rand(0.18, 0.75),
+      warm: Math.random() > 0.45,
+    }));
+    const leaves = Array.from({ length: leafCount }, () => ({
+      x: rand(0, w), y: rand(-h, h), rx: rand(3.5, 8), ry: rand(1.6, 3.4),
+      vy: rand(0.18, 0.55), vx: rand(-0.22, 0.22), rot: rand(0, Math.PI * 2),
+      vr: rand(-0.006, 0.006), a: rand(0.12, 0.34), petal: Math.random() > 0.55,
+    }));
+
+    let t = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      t += 1;
+      motes.forEach((m) => {
+        m.y -= m.sp;
+        if (m.y < -8) { m.y = h + 8; m.x = rand(0, w); }
+        const x = m.x + Math.sin((t / 90) * m.sway + m.phase) * 14;
+        const flick = 0.72 + Math.sin(t / 26 + m.phase) * 0.28;
+        const col = lightTheme ? (m.warm ? '198,146,132' : '150,170,159') : (m.warm ? '212,175,119' : '184,201,193');
+        const g = ctx.createRadialGradient(x, m.y, 0, x, m.y, m.r * 7);
+        g.addColorStop(0, `rgba(${col},${m.a * flick})`);
+        g.addColorStop(1, `rgba(${col},0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(x, m.y, m.r * 7, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = `rgba(${col},${Math.min(1, m.a * flick * 1.7)})`;
+        ctx.beginPath(); ctx.arc(x, m.y, m.r * 0.55, 0, Math.PI * 2); ctx.fill();
+      });
+      leaves.forEach((l) => {
+        l.y += l.vy; l.x += l.vx + Math.sin(t / 120 + l.rot) * 0.16; l.rot += l.vr;
+        if (l.y > h + 12) { l.y = -12; l.x = rand(0, w); }
+        ctx.save();
+        ctx.translate(l.x, l.y); ctx.rotate(l.rot);
+        ctx.fillStyle = lightTheme ? (l.petal ? `rgba(214,168,158,${l.a})` : `rgba(150,170,159,${l.a})`) : (l.petal ? `rgba(232,212,176,${l.a})` : `rgba(143,168,158,${l.a})`);
+        ctx.beginPath(); ctx.ellipse(0, 0, l.rx, l.ry, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      });
+      this._raf = requestAnimationFrame(draw);
+    };
+    draw();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.particleDensity !== this.props.particleDensity) {
+      if (this._raf) cancelAnimationFrame(this._raf);
+      if (this._canvasResize) window.removeEventListener('resize', this._canvasResize);
+      this._startParticles();
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._interval);
+    if (this._observer) this._observer.disconnect();
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('resize', this._onResize);
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._canvasResize) window.removeEventListener('resize', this._canvasResize);
+  }
+
+  _onResize = () => {
+    const isMobile = window.innerWidth < 768;
+    if (isMobile !== this.state.isMobile) this.setState({ isMobile });
+  };
+
+  _onScroll = () => {
+    const y = window.scrollY;
+    const scrolled = y > 40;
+    const next = {};
+    if (scrolled !== this.state.scrolled) next.scrolled = scrolled;
+    const ids = ['hero', 'historia', 'lugar', 'agenda', 'rsvp', 'info'];
+    const mid = window.innerHeight * 0.45;
+    let active = 0;
+    ids.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= mid) active = i;
+    });
+    if (active !== this.state.activeScene) next.activeScene = active;
+    if (Object.keys(next).length) this.setState(next);
+  };
+
+  _tick = () => {
+    const now = new Date();
+    let diff = WEDDING_DATE.getTime() - now.getTime();
+    if (diff < 0) diff = 0;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    this.setState({ countdown: { days: pad(days), hours: pad(hours), minutes: pad(minutes), seconds: pad(seconds) } });
+  };
+
+  renderVals() {
+    const dark = this.props.darkMode ?? false;
+    const c = dark ? PALETTE_DARK : PALETTE_LIGHT;
+    const bgPage = dark ? c.bg : c.arena100;
+    const textOnBg = dark ? c.arena50 : c.bg;
+
+    const timeline = [
+      { date: 'Capítulo I · El encuentro', title: 'Una carta que no esperábamos', description: 'No hubo señales ni presagios: solo una conversación que se alargó más de lo previsto y la extraña sensación de reconocer a alguien por primera vez.', photoLabel: 'foto: primer encuentro' },
+      { date: 'Capítulo II · El hechizo cotidiano', title: 'Magia de todos los días', description: 'Aprendimos que lo extraordinario vive en lo pequeño: un café a medias, plantas que sobreviven de milagro, canciones repetidas hasta gastarlas.', photoLabel: 'foto: vida cotidiana' },
+      { date: 'Capítulo III · El bosque', title: 'Nos perdimos a propósito', description: 'Cada viaje nos confirmó lo mismo: entre niebla, helechos y caminos sin señalizar, cualquier lugar se vuelve nuestro si vamos juntos.', photoLabel: 'foto: viaje memorable' },
+      { date: 'Capítulo IV · La promesa', title: 'Un sí entre flores y pizarra', description: 'Elegimos la Sierra Norte para decirlo en voz alta, rodeados de bosque, velas y de las personas que han escrito esta historia con nosotros.', photoLabel: 'foto: la propuesta' },
+    ];
+
+    const pets = [
+      { name: 'Bruno', breed: 'Podenco', photo: 'uploads/IMG-20260728-WA0021.jpg', photoLabel: 'foto: Bruno', description: 'El más largo de patas y de paciencia. Explora cada camino tres veces antes de decidir por dónde vamos y siempre encuentra la única mancha de sol de la casa.' },
+      { name: 'Rocco', breed: 'Chihuahua', photo: 'uploads/IMG-20260728-WA0023.jpg', photoLabel: 'foto: Rocco', description: 'El último en llegar y el que puso la casa del revés en una semana. Pequeño, opinable y con alma de guardián: ladra a lo imposible y se rinde en cuanto le rascas la barriga.' },
+      { name: 'Junior', breed: 'Chihuahua mini', photo: 'uploads/IMG-20260728-WA0015.jpg', focus: '46% 42%', photoLabel: 'foto: Junior', description: 'El primero de todos: ya era la sombra de Daniel antes de que Irene apareciera. Cabe en una mano, ocupa media cama y si hay manta, hay Junior debajo.' },
+    ];
+    pets.forEach((p, i) => {
+      const petPhotoOk = !!(p.photo && !this.state.brokenPhotos[p.photo]);
+      p.noPhoto = !petPhotoOk;
+      p.photoWrapStyle = { position: 'relative', width: '100%' };
+      p.leafStyle = {
+        position: 'absolute', zIndex: 2, pointerEvents: 'none',
+        width: '78px', height: '61px',
+        backgroundImage: 'url("assets/b2-leaf.png")', backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat', backgroundPosition: 'center',
+        opacity: 0.9,
+        ...(i % 2 ? { top: '-16px', right: '-22px', rotate: '150deg' } : { bottom: '-14px', left: '-20px', rotate: '-18deg' }),
+      };
+      p.photoBgStyle = petPhotoOk ? {
+        position: 'absolute', inset: 0,
+        backgroundImage: `url(${p.photo})`,
+        backgroundSize: 'cover',
+        backgroundPosition: p.focus || 'center 30%',
+        filter: dark ? 'saturate(0.85) brightness(0.9)' : 'saturate(0.9) contrast(0.97)',
+      } : null;
+      p.cardStyle = {
+        textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center',
+        marginTop: this.state.isMobile ? 0 : (i === 1 ? '0px' : '40px'),
+        opacity: this.state.manadaVisible ? 1 : 0,
+        transform: this.state.manadaVisible ? 'translateY(0)' : 'translateY(28px)',
+        transition: `opacity 0.9s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.14}s, transform 0.9s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.14}s`,
+      };
+      p.photoStyle = {
+        position: 'relative', width: '100%', aspectRatio: '3/4', overflow: 'hidden',
+        borderRadius: '160px 160px 12px 12px',
+        border: `1px solid ${c.border}`,
+        boxShadow: dark ? '0 18px 40px rgba(0,0,0,0.35)' : '0 18px 40px rgba(190,158,156,0.22)',
+      };
+    });
+
+    const fincaPhotos = [
+      { label: 'foto: instalaciones de la finca', src: 'uploads/instalaciones-aldea-tejera-negra-FOTO-13-min.jpg' },
+      { label: 'foto: camino de flores', src: 'uploads/instalaciones-aldea-tejera-negra-FOTO-1-min.jpg' },
+      { label: 'foto: jardines al atardecer', src: 'uploads/instalaciones-aldea-tejera-negra-FOTO-25-min.jpg' },
+    ].map(p => {
+      const fincaOk = !!(p.src && !this.state.brokenPhotos[p.src]);
+      return {
+        ...p,
+        noPhoto: !fincaOk,
+        bgStyle: fincaOk ? {
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${p.src})`,
+          backgroundSize: 'cover', backgroundPosition: 'center',
+          filter: dark ? 'saturate(0.85) brightness(0.9)' : 'saturate(0.9) contrast(0.97)',
+        } : null,
+      };
+    });
+
+    const agendaDays = [
+      { label: 'Viernes · 3 Septiembre', highlight: false, events: [
+        { time: '19:00', name: 'Preboda', desc: 'Bienvenida informal para abrir el fin de semana' },
+        { time: '23:30', name: 'Cierre de la jornada', desc: '' },
+      ]},
+      { label: 'Sábado · 4 Septiembre', highlight: true, events: [
+        { time: '17:30', name: 'Ceremonia', desc: '' },
+        { time: '18:30', name: 'Cóctel', desc: '' },
+        { time: '21:00', name: 'Banquete', desc: '' },
+        { time: '00:00', name: 'Fiesta', desc: 'Hasta que el cuerpo aguante' },
+      ]},
+      { label: 'Domingo · 5 Septiembre', highlight: false, events: [
+        { time: '13:30', name: 'Comida de despedida', desc: '' },
+      ]},
+    ];
+
+    const infoCards = [
+      { title: 'Ubicación', text: 'Finca Aldea Tejera Negra, Campillo de Ranas, Guadalajara. Enlace directo a Google Maps disponible arriba.' },
+      { title: 'Clima', text: 'Principios de septiembre en la sierra: días templados, noches frescas. Trae una chaqueta ligera.' },
+      { title: 'Alojamiento cercano', text: 'Recomendaciones de casas rurales y hoteles en Campillo de Ranas y alrededores, disponibles bajo petición.' },
+      { title: 'Contacto', text: 'Para cualquier duda de organización, escríbenos directamente — estaremos encantados de ayudar.' },
+    ];
+
+    const stripesBg = (base, fill) => `repeating-linear-gradient(135deg, ${base} 0px, ${base} 12px, ${fill} 12px, ${fill} 24px)`;
+
+    const eyebrowStyle = (visible) => ({
+      fontFamily: 'Inter, sans-serif', fontSize: '13px', letterSpacing: '0.18em', textTransform: 'uppercase',
+      color: c.salvia500, marginBottom: '16px', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)',
+      transition: 'opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)',
+    });
+
+    const h2Style = (visible) => ({
+      fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: 'clamp(32px, 5vw, 56px)',
+      color: textOnBg, letterSpacing: '-0.02em', lineHeight: 1.15,
+      opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(24px)',
+      transition: 'opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s',
+    });
+
+    const lugarLeadStyle = (visible) => ({
+      fontFamily: 'Inter, sans-serif', fontSize: '17px', lineHeight: 1.7, color: dark ? c.arena100 : c.bg2,
+      maxWidth: '640px', marginTop: '24px', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(20px)',
+      transition: 'opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s',
+    });
+
+    const isMobile = this.state.isMobile;
+    const timelineRowStyleFor = (i) => {
+      const left = i % 2 === 0;
+      if (isMobile) return { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '24px', marginBottom: '56px' };
+      return {
+        display: 'grid', gridTemplateColumns: '240px 1fr', gap: '48px', alignItems: 'center',
+        marginBottom: '72px', direction: left ? 'ltr' : 'rtl',
+      };
+    };
+    const timelineImgWrapStyle = {
+      width: isMobile ? '180px' : '240px', height: isMobile ? '180px' : '240px', borderRadius: '50%', border: `3px solid ${c.salvia500}`,
+      overflow: 'hidden', position: 'relative', direction: 'ltr', justifySelf: 'start',
+    };
+    const chapterPhotos = [
+      'uploads/IMG-20260728-WA0004.jpg',
+      'uploads/IMG-20260130-WA0018.jpg',
+      'uploads/IMG-20260728-WA0029.jpg',
+      'uploads/IMG-20260728-WA0012.jpg',
+    ];
+    const timelinePhotoStyle = { position: 'absolute', inset: 0, backgroundSize: 'cover', backgroundPosition: 'center', filter: dark ? 'saturate(0.85) brightness(0.9)' : 'saturate(0.9) contrast(0.97)' };
+    const timelineImgStripes = { position: 'absolute', inset: 0, background: stripesBg(dark ? '#31353A' : '#F2E5E4', dark ? '#23272A' : '#FBF3F2') };
+    const timelineTextWrapStyle = { direction: 'ltr', maxWidth: '460px' };
+    timeline.forEach((item, i) => {
+      const chapterOk = !!(chapterPhotos[i] && !this.state.brokenPhotos[chapterPhotos[i]]);
+      item.rowStyle = timelineRowStyleFor(i);
+      item.imgWrapStyle = timelineImgWrapStyle;
+      item.photoBgStyle = chapterOk ? { ...timelinePhotoStyle, backgroundImage: `url(${chapterPhotos[i]})` } : null;
+      item.hasPhoto = chapterOk;
+      item.noPhoto = !chapterOk;
+      item.textWrapStyle = timelineTextWrapStyle;
+    });
+
+    agendaDays.forEach((day) => {
+      day.cardStyle = {
+        border: `1px solid ${c.border}`, borderRadius: '4px', marginBottom: '24px', overflow: 'hidden',
+        background: day.highlight ? (dark ? c.bg2 : 'rgba(248,237,236,0.6)') : 'transparent',
+      };
+      day.headerStyle = {
+        fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, fontSize: '24px', padding: '20px 28px',
+        color: day.highlight ? c.dorado400 : textOnBg, borderBottom: `1px solid ${c.border}`,
+        background: day.highlight ? (dark ? 'rgba(107,130,120,0.15)' : 'rgba(196,155,150,0.12)') : 'transparent',
+      };
+    });
+
+    const lightScenes = [
+      `radial-gradient(1100px 720px at 50% 14%, rgba(240,214,213,0.75), rgba(253,246,245,0) 72%), radial-gradient(820px 820px at 82% 88%, rgba(224,208,204,0.42), rgba(253,246,245,0) 70%)`,
+      `radial-gradient(900px 640px at 18% 24%, rgba(243,222,214,0.62), rgba(253,246,245,0) 70%), radial-gradient(760px 660px at 86% 72%, rgba(219,214,206,0.40), rgba(253,246,245,0) 70%)`,
+      `radial-gradient(1000px 720px at 72% 18%, rgba(233,221,222,0.60), rgba(253,246,245,0) 70%), radial-gradient(680px 680px at 14% 80%, rgba(240,219,218,0.48), rgba(253,246,245,0) 70%)`,
+      `radial-gradient(860px 660px at 50% 44%, rgba(246,226,208,0.52), rgba(253,246,245,0) 68%), radial-gradient(760px 760px at 12% 24%, rgba(240,214,213,0.38), rgba(253,246,245,0) 70%)`,
+      `radial-gradient(940px 740px at 30% 28%, rgba(228,222,215,0.48), rgba(253,246,245,0) 70%), radial-gradient(840px 660px at 88% 76%, rgba(242,216,214,0.44), rgba(253,246,245,0) 70%)`,
+      `radial-gradient(1020px 760px at 50% 86%, rgba(245,225,214,0.52), rgba(253,246,245,0) 70%), radial-gradient(760px 660px at 20% 18%, rgba(233,224,219,0.40), rgba(253,246,245,0) 70%)`,
+    ];
+    const darkScenes = [
+      // hero — claro de bosque bajo la luna
+      `radial-gradient(1200px 780px at 50% 18%, rgba(58,72,70,0.55), rgba(16,19,20,0) 70%), radial-gradient(900px 900px at 80% 90%, rgba(107,130,120,0.18), rgba(16,19,20,0) 70%)`,
+      // historia — atardecer entre hojas
+      `radial-gradient(1000px 700px at 18% 26%, rgba(96,90,66,0.42), rgba(16,19,20,0) 68%), radial-gradient(800px 700px at 85% 70%, rgba(107,130,120,0.22), rgba(16,19,20,0) 70%)`,
+      // lugar — noche de pizarra
+      `radial-gradient(1100px 800px at 70% 20%, rgba(60,80,78,0.38), rgba(16,19,20,0) 70%), radial-gradient(700px 700px at 15% 80%, rgba(38,48,46,0.5), rgba(16,19,20,0) 70%)`,
+      // agenda — interior a la luz de las velas
+      `radial-gradient(900px 700px at 50% 45%, rgba(140,104,58,0.28), rgba(16,19,20,0) 66%), radial-gradient(800px 800px at 12% 25%, rgba(212,175,119,0.12), rgba(16,19,20,0) 70%)`,
+      // rsvp — bosque profundo
+      `radial-gradient(1000px 800px at 30% 30%, rgba(72,96,90,0.34), rgba(16,19,20,0) 70%), radial-gradient(900px 700px at 88% 75%, rgba(212,175,119,0.10), rgba(16,19,20,0) 70%)`,
+      // info — primera luz del alba
+      `radial-gradient(1100px 800px at 50% 85%, rgba(150,132,98,0.26), rgba(16,19,20,0) 70%), radial-gradient(800px 700px at 20% 20%, rgba(107,130,120,0.20), rgba(16,19,20,0) 70%)`,
+    ];
+    const sceneGradients = dark ? darkScenes : lightScenes;
+    const scenes = sceneGradients.map((bg, i) => ({
+      style: {
+        position: 'absolute', inset: 0, background: bg,
+        opacity: this.state.activeScene === i ? 1 : 0,
+        transition: 'opacity 1.6s cubic-bezier(0.4,0,0.2,1)',
+      },
+    }));
+
+    // --- Detalles botánicos en línea: tejo, helecho, lavanda y flores silvestres ---
+    const gIntensity = this.props.garlandIntensity ?? 1;
+    const bo = (v) => ({ opacity: Math.min(1, v * gIntensity) });
+    const accent = (name, box, extra) => ({
+      position: 'absolute', pointerEvents: 'none', zIndex: 0, contain: 'strict',
+      backgroundImage: `url("assets/b2-${name}.png")`, backgroundSize: 'contain',
+      backgroundRepeat: 'no-repeat', backgroundPosition: 'center',
+      filter: dark ? 'saturate(0.8) brightness(1.35)' : 'none',
+      ...box, ...bo((extra && extra.o) || 0.85),
+      ...(extra && extra.rotate ? { rotate: extra.rotate + 'deg' } : {}),
+    });
+
+    return {
+      c,
+      accHistoriaC: accent('lavbunch', { top: '40%', right: isMobile ? '-38px' : '4px', width: isMobile ? '78px' : '104px', height: isMobile ? '91px' : '121px' }, { o: 0.6, rotate: 12 }),
+      accHistoriaD: accent('yewberry', { top: '62%', left: isMobile ? '-42px' : '-6px', width: isMobile ? '96px' : '132px', height: isMobile ? '66px' : '91px' }, { o: 0.55, rotate: -9 }),
+      accManadaC: accent('fernful-a', { top: '52%', right: isMobile ? '-40px' : '0px', width: isMobile ? '88px' : '118px', height: isMobile ? '94px' : '126px' }, { o: 0.6, rotate: 8 }),
+      accLugarC: accent('wildmix', { top: '46%', left: isMobile ? '-52px' : '-10px', width: isMobile ? '108px' : '146px', height: isMobile ? '76px' : '103px' }, { o: 0.55, rotate: -12 }),
+      accAgendaB: accent('fernful-b', { bottom: '52px', right: isMobile ? '-40px' : '-6px', width: isMobile ? '92px' : '124px', height: isMobile ? '99px' : '133px' }, { o: 0.62, rotate: -6 }),
+      accAgendaC: accent('lavbunch', { top: '54%', left: isMobile ? '-36px' : '2px', width: isMobile ? '74px' : '98px', height: isMobile ? '86px' : '114px' }, { o: 0.5, rotate: -14 }),
+      accRsvpB: accent('fernful-a', { bottom: '44px', left: isMobile ? '-42px' : '-8px', width: isMobile ? '94px' : '126px', height: isMobile ? '101px' : '135px' }, { o: 0.6, rotate: 10 }),
+      accRsvpC: accent('yewberry', { top: '58%', right: isMobile ? '-44px' : '-4px', width: isMobile ? '98px' : '134px', height: isMobile ? '67px' : '92px' }, { o: 0.5, rotate: 14 }),
+      accInfoB: accent('wildmix', { top: '30px', right: isMobile ? '-50px' : '-12px', width: isMobile ? '112px' : '150px', height: isMobile ? '79px' : '106px' }, { o: 0.62, rotate: 9 }),
+      accInfoC: accent('lavbunch', { bottom: '30%', right: isMobile ? '-34px' : '6px', width: isMobile ? '72px' : '94px', height: isMobile ? '84px' : '110px' }, { o: 0.48, rotate: 16 }),
+      accRegaloA: accent('crown', { top: '18px', left: '50%', width: isMobile ? '210px' : '290px', height: isMobile ? '65px' : '89px', translate: '-50% 0' }, { o: 0.5 }),
+      accRegaloB: accent('sprig-c', { bottom: '10px', right: isMobile ? '-44px' : '-8px', width: isMobile ? '104px' : '140px', height: isMobile ? '90px' : '121px' }, { o: 0.5, rotate: 172 }),
+      accFooterL: accent('fernful-b', { bottom: '4px', left: isMobile ? '-40px' : '18px', width: isMobile ? '86px' : '116px', height: isMobile ? '92px' : '124px' }, { o: 0.45, rotate: -8 }),
+      accFooterR: accent('fernful-a', { bottom: '4px', right: isMobile ? '-40px' : '18px', width: isMobile ? '86px' : '116px', height: isMobile ? '92px' : '124px' }, { o: 0.45, rotate: 8 }),
+      accHistoriaA: accent('sprig-b', { top: '18px', right: isMobile ? '-42px' : '-10px', width: isMobile ? '132px' : '186px', height: isMobile ? '114px' : '161px' }, { o: 0.8, rotate: 6 }),
+      accHistoriaB: accent('sprig-c', { bottom: '40px', left: isMobile ? '-46px' : '-16px', width: isMobile ? '124px' : '170px', height: isMobile ? '107px' : '147px' }, { o: 0.7, rotate: -5 }),
+      accManadaA: accent('sprig-a', { top: '34px', left: isMobile ? '-48px' : '-8px', width: isMobile ? '128px' : '176px', height: isMobile ? '111px' : '152px' }, { o: 0.78, rotate: -4 }),
+      accManadaB: accent('sprig-d', { bottom: '26px', right: isMobile ? '-44px' : '-12px', width: isMobile ? '120px' : '164px', height: isMobile ? '104px' : '142px' }, { o: 0.68, rotate: 5 }),
+      accLugarA: accent('sprig-b', { top: '52px', right: isMobile ? '-50px' : '-18px', width: isMobile ? '118px' : '158px', height: isMobile ? '102px' : '137px' }, { o: 0.72, rotate: -8 }),
+      accLugarB: accent('sprig-c', { bottom: '54px', left: isMobile ? '-50px' : '-20px', width: isMobile ? '116px' : '152px', height: isMobile ? '100px' : '132px' }, { o: 0.62, rotate: 7 }),
+      accAgendaA: accent('sprig-a', { top: '44px', left: isMobile ? '-52px' : '-14px', width: isMobile ? '112px' : '150px', height: isMobile ? '97px' : '130px' }, { o: 0.66, rotate: 8 }),
+      accRsvpA: accent('sprig-d', { top: '38px', right: isMobile ? '-48px' : '-10px', width: isMobile ? '122px' : '166px', height: isMobile ? '106px' : '144px' }, { o: 0.74, rotate: -6 }),
+      accInfoA: accent('sprig-c', { bottom: '48px', left: isMobile ? '-48px' : '-14px', width: isMobile ? '114px' : '154px', height: isMobile ? '99px' : '133px' }, { o: 0.66, rotate: -7 }),
+      accFooter: accent('frond', { bottom: '-6px', left: '50%', width: isMobile ? '300px' : '420px', height: isMobile ? '90px' : '126px', translate: '-50% 0' }, { o: 0.5 }),
+      accLeafL: accent('leaf', { top: '-14px', left: '-26px', width: '64px', height: '50px' }, { o: 0.7, rotate: -14 }),
+      accLeafR: accent('leaf', { bottom: '-12px', right: '-24px', width: '58px', height: '45px' }, { o: 0.6, rotate: 168 }),
+      scenes,
+      canvasRef: this.canvasRef,
+      canvasStyle: { position: 'fixed', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 },
+      ambienceWrapStyle: { position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, background: dark ? '#101314' : c.arena100 },
+      vignetteStyle: { position: 'absolute', inset: 0, background: dark ? 'radial-gradient(120% 90% at 50% 45%, rgba(0,0,0,0) 45%, rgba(10,12,13,0.55) 100%)' : 'radial-gradient(120% 92% at 50% 45%, rgba(255,255,255,0) 50%, rgba(216,190,189,0.28) 100%)' },
+      showRegalo: this.props.showRegalo ?? true,
+      phLabelColor: dark ? c.arena100 : c.bg2,
+      phLabelStrong: dark ? c.arena50 : c.bg,
+      historiaEyebrowStyle: eyebrowStyle(this.state.historiaVisible),
+      historiaH2Style: h2Style(this.state.historiaVisible),
+      lugarEyebrowStyle: eyebrowStyle(this.state.lugarVisible),
+      lugarH2Style: h2Style(this.state.lugarVisible),
+      lugarLeadStyle: lugarLeadStyle(this.state.lugarVisible),
+      agendaEyebrowStyle: eyebrowStyle(this.state.agendaVisible),
+      agendaH2Style: h2Style(this.state.agendaVisible),
+      rsvpEyebrowStyle: eyebrowStyle(this.state.rsvpVisible),
+      rsvpH2Style: h2Style(this.state.rsvpVisible),
+      rsvpLeadStyle: lugarLeadStyle(this.state.rsvpVisible),
+      infoEyebrowStyle: eyebrowStyle(this.state.infoVisible),
+      infoH2Style: h2Style(this.state.infoVisible),
+      fincaPhotoStyle: { position: 'relative', aspectRatio: '4/3', borderRadius: '4px', overflow: 'hidden' },
+      fincaPhotoStripesStyle: { position: 'absolute', inset: 0, background: stripesBg(dark ? '#31353A' : '#F0E2E1', dark ? '#23272A' : '#F9F0EF') },
+      rsvpNotSubmitted: !this.state.rsvpSubmitted,
+      rsvpMenuIsCarne: this.state.rsvp.menu === 'carne',
+      rsvpMenuIsPescado: this.state.rsvp.menu === 'pescado',
+      updateRsvpNombre: (e) => this.setState((s) => ({ rsvp: { ...s.rsvp, nombre: e.target.value } })),
+      updateRsvpAlergias: (e) => this.setState((s) => ({ rsvp: { ...s.rsvp, alergias: e.target.value } })),
+      updateRsvpComentarios: (e) => this.setState((s) => ({ rsvp: { ...s.rsvp, comentarios: e.target.value } })),
+      toggleRsvpPreboda: (e) => this.setState((s) => ({ rsvp: { ...s.rsvp, preboda: e.target.checked } })),
+      toggleRsvpBoda: (e) => this.setState((s) => ({ rsvp: { ...s.rsvp, boda: e.target.checked } })),
+      toggleRsvpComida: (e) => this.setState((s) => ({ rsvp: { ...s.rsvp, comida: e.target.checked } })),
+      setRsvpMenuCarne: () => this.setState((s) => ({ rsvp: { ...s.rsvp, menu: 'carne' } })),
+      setRsvpMenuPescado: () => this.setState((s) => ({ rsvp: { ...s.rsvp, menu: 'pescado' } })),
+      pageStyle: { background: 'transparent', minHeight: '100vh', fontFamily: 'Inter, sans-serif', overflowX: 'hidden', position: 'relative', zIndex: 0 },
+      scrollToTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+      navStyle: {
+        position: 'sticky', top: 0, zIndex: 30, height: '72px', WebkitBackdropFilter: this.state.scrolled ? 'blur(12px)' : 'none', display: 'flex', alignItems: 'center',
+        justifyContent: 'space-between', padding: isMobile ? '0 20px' : '0 40px', background: this.state.scrolled ? (dark ? 'rgba(26,29,31,0.92)' : 'rgba(253,246,245,0.92)') : 'transparent',
+        backdropFilter: this.state.scrolled ? 'blur(12px)' : 'none',
+        borderBottom: this.state.scrolled ? `1px solid ${c.border}` : '1px solid transparent',
+        transition: 'background 0.4s ease, border-color 0.4s ease',
+      },
+      navLinkStyle: {
+        fontFamily: 'Inter, sans-serif', fontSize: '13px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase',
+        color: textOnBg, textDecoration: 'none',
+      },
+      hamburgerStyle: {
+        display: isMobile ? 'flex' : 'none', flexDirection: 'column', gap: '5px', width: '44px', height: '44px', alignItems: 'flex-end', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginRight: '-8px',
+      },
+      hamburgerLine1: { width: '100%', height: '2px', background: textOnBg, transition: 'transform 0.3s ease', transform: this.state.menuOpen ? 'translateY(7px) rotate(45deg)' : 'none' },
+      hamburgerLine2: { width: '100%', height: '2px', background: textOnBg, opacity: this.state.menuOpen ? 0 : 1 },
+      hamburgerLine3: { width: '100%', height: '2px', background: textOnBg, transition: 'transform 0.3s ease', transform: this.state.menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' },
+      menuOpen: this.state.menuOpen,
+      toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      mobileMenuStyle: {
+        position: 'fixed', top: '72px', left: 0, right: 0, zIndex: 29,
+        background: dark ? 'rgba(26,29,31,0.97)' : 'rgba(253,246,245,0.97)', backdropFilter: 'blur(14px)',
+        borderBottom: `1px solid ${c.border}`, display: 'flex', flexDirection: 'column', padding: '8px 22px 20px',
+      },
+      mobileLinkStyle: {
+        minHeight: '48px', display: 'flex', alignItems: 'center', borderBottom: `1px solid ${c.border}`, fontFamily: 'Inter, sans-serif', fontSize: '15px', color: textOnBg, textDecoration: 'none', padding: '4px 0' },
+
+      heroRef: this.heroRef,
+      heroVideoRef: this.heroVideoRef,
+      heroSectionStyle: { position: 'relative', zIndex: 2, height: isMobile ? '100svh' : '100vh', minHeight: isMobile ? '560px' : '640px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+      heroMediaStyle: { position: 'absolute', inset: 0, background: dark ? '#0F1112' : '#F7ECEB', overflow: 'hidden' },
+      heroVideoStyle: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: dark ? 'saturate(0.9) brightness(0.85)' : 'saturate(0.86) brightness(1.06) contrast(0.96)' },
+      heroOverlayStyle: { position: 'absolute', inset: 0, background: dark ? 'radial-gradient(circle at 50% 40%, rgba(26,29,31,0.35), rgba(26,29,31,0.82))' : 'radial-gradient(circle at 50% 38%, rgba(253,246,245,0.34), rgba(247,236,235,0.78))' },
+      heroFogStyle: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: dark ? 'linear-gradient(to top, rgba(26,29,31,0.9), transparent)' : 'linear-gradient(to top, rgba(253,246,245,0.95), transparent)' },
+      heroGlowA: { position: 'absolute', top: '20%', left: '16%', width: '124px', height: '124px', borderRadius: '50%', background: dark ? 'radial-gradient(circle, rgba(212,175,119,0.18), rgba(212,175,119,0) 70%)' : 'radial-gradient(circle, rgba(214,161,152,0.20), rgba(214,161,152,0) 70%)', animation: 'glow 7s ease-in-out infinite', pointerEvents: 'none' },
+      heroGlowB: { position: 'absolute', bottom: '24%', right: '14%', width: '156px', height: '156px', borderRadius: '50%', background: dark ? 'radial-gradient(circle, rgba(143,168,158,0.16), rgba(143,168,158,0) 70%)' : 'radial-gradient(circle, rgba(150,170,159,0.16), rgba(150,170,159,0) 70%)', animation: 'glow 9s ease-in-out 1.4s infinite', pointerEvents: 'none' },
+      heroGlowC: { position: 'absolute', top: '38%', right: '30%', width: '84px', height: '84px', borderRadius: '50%', background: dark ? 'radial-gradient(circle, rgba(232,212,176,0.14), rgba(232,212,176,0) 70%)' : 'radial-gradient(circle, rgba(226,196,186,0.18), rgba(226,196,186,0) 70%)', animation: 'glow 6s ease-in-out 0.8s infinite', pointerEvents: 'none' },
+      ornamentStyle: { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '28px', maxWidth: '320px' },
+      ornamentLine: { flex: 1, height: '1px', background: dark ? 'linear-gradient(90deg, rgba(212,175,119,0), rgba(212,175,119,0.85), rgba(212,175,119,0))' : 'linear-gradient(90deg, rgba(191,139,101,0), rgba(191,139,101,0.6), rgba(191,139,101,0))' },
+      ornamentDiamond: { width: '6px', height: '6px', background: c.salvia500, transform: 'rotate(45deg)' },
+      ornamentDot: { width: '7px', height: '7px', borderRadius: '50%', background: c.dorado400, boxShadow: dark ? `0 0 8px ${c.dorado400}` : 'none' },
+      ornamentCenteredStyle: { display: 'flex', alignItems: 'center', gap: '10px', maxWidth: '260px', margin: '0 auto 28px' },
+      heroContentStyle: { position: 'relative', zIndex: 2, textAlign: 'center', padding: isMobile ? '0 18px' : '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
+      heroKickerStyle: { fontFamily: 'Inter, sans-serif', fontSize: '13px', letterSpacing: '0.2em', textTransform: 'uppercase', color: c.salvia300, marginBottom: '20px' },
+      heroTitleStyle: { fontFamily: "'Great Vibes', cursive", fontSize: 'clamp(52px, 15vw, 108px)', color: dark ? c.arena50 : c.bg, lineHeight: 1.06, marginBottom: '20px', padding: isMobile ? '0 6px' : 0 },
+      heroDateStyle: { fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(20px, 3vw, 28px)', color: dark ? c.arena100 : c.bg2, marginBottom: '8px', fontWeight: 400 },
+      heroLocStyle: { fontFamily: 'Inter, sans-serif', fontSize: '14px', color: dark ? c.arena100 : c.bg2, opacity: 0.8, marginBottom: '40px' },
+      heroCtaStyle: {
+        fontFamily: 'Inter, sans-serif', fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase',
+        color: '#FFFCFC', background: `linear-gradient(135deg, ${c.salvia500}, ${c.salvia700})`, padding: '16px 40px', borderRadius: '32px',
+        textDecoration: 'none', boxShadow: `0 4px 16px rgba(143,168,158,0.3)`,
+      },
+      scrollIndicatorStyle: { position: 'absolute', bottom: '32px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 2 },
+      scrollDotStyle: { width: '6px', height: '6px', borderRadius: '50%', background: c.salvia500, animation: 'bounce 1.6s ease-in-out infinite' },
+
+      sectionWrapStyle: { padding: isMobile ? '76px 22px' : '120px 40px', position: 'relative', zIndex: 2, overflow: 'hidden' },
+      sectionInnerStyle: { maxWidth: '1120px', margin: '0 auto', position: 'relative', zIndex: 1 },
+      sectionInnerNarrowStyle: { maxWidth: '640px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 },
+      historiaRef: this.historiaRef,
+      historiaVisible: this.state.historiaVisible,
+      timeline,
+      timelineImgStripes,
+      timelinePhotoStyle,
+      timelineDateStyle: { fontFamily: 'Inter, sans-serif', fontSize: '13px', letterSpacing: '0.1em', textTransform: 'uppercase', color: c.salvia300 },
+      timelineTitleStyle: { fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', color: textOnBg, margin: '8px 0 12px', fontWeight: 500 },
+      timelineDescStyle: { fontFamily: 'Inter, sans-serif', fontSize: '15px', lineHeight: 1.7, color: dark ? c.arena100 : c.bg2 },
+
+      manadaRef: this.manadaRef,
+      manadaSectionStyle: { padding: isMobile ? '76px 22px' : '120px 40px', position: 'relative', zIndex: 2, overflow: 'hidden' },
+      manadaEyebrowStyle: eyebrowStyle(this.state.manadaVisible),
+      manadaH2Style: h2Style(this.state.manadaVisible),
+      manadaLeadStyle: { ...lugarLeadStyle(this.state.manadaVisible), margin: '24px auto 0', textAlign: 'center', textWrap: 'pretty' },
+      manadaFootnoteStyle: {
+        fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: '19px', textAlign: 'center',
+        color: dark ? c.arena100 : c.bg2, opacity: 0.8, marginTop: '56px',
+      },
+      petsGridStyle: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? '48px' : '36px', alignItems: 'start' },
+      petStripesStyle: { position: 'absolute', inset: 0, background: stripesBg(dark ? '#31353A' : '#F2E5E4', dark ? '#23272A' : '#FBF3F2') },
+      petNameStyle: { fontFamily: "'Great Vibes', cursive", fontSize: '40px', color: dark ? c.dorado200 : c.dorado400, marginTop: '22px', lineHeight: 1 },
+      petBreedStyle: { fontFamily: 'Inter, sans-serif', fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: c.salvia300, marginTop: '10px' },
+      petDescStyle: { fontFamily: 'Inter, sans-serif', fontSize: '14.5px', lineHeight: 1.75, color: dark ? c.arena100 : c.bg2, marginTop: '14px', textWrap: 'pretty' },
+      pets,
+
+      lugarRef: this.lugarRef,
+      lugarVisible: this.state.lugarVisible,
+      lugarSectionStyle: { padding: isMobile ? '76px 22px' : '120px 40px', position: 'relative', zIndex: 2, background: 'transparent', overflow: 'hidden' },
+      lugarGridStyle: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '24px' },
+      lugarInfoGrid: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '24px' },
+      lugarInfoCard: { padding: isMobile ? '22px 20px' : '28px', border: `1px solid ${c.border}`, borderRadius: '4px' },
+      lugarInfoTitle: { fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', color: c.dorado400, marginBottom: '10px', fontWeight: 500 },
+      lugarInfoText: { fontFamily: 'Inter, sans-serif', fontSize: '14px', lineHeight: 1.6, color: dark ? c.arena100 : c.bg2 },
+      mapPlaceholderStyle: { position: 'relative', height: '320px', borderRadius: '4px', overflow: 'hidden', background: dark ? 'rgba(26,29,31,0.7)' : 'rgba(243,230,229,0.7)', border: `1px solid ${c.border}` },
+
+      agendaRef: this.agendaRef,
+      agendaVisible: this.state.agendaVisible,
+      agendaEventsWrap: { padding: '8px 28px 20px' },
+      agendaEventRow: { display: 'flex', alignItems: 'baseline', gap: '18px', padding: '12px 0' },
+      agendaDotStyle: { width: '10px', height: '10px', borderRadius: '50%', background: c.salvia500, flexShrink: 0, marginTop: '4px' },
+      agendaTimeStyle: { fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '16px', color: c.dorado400, minWidth: '56px' },
+      agendaEventTextWrap: {},
+      agendaEventName: { fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', color: textOnBg },
+      agendaEventDesc: { fontFamily: 'Inter, sans-serif', fontSize: '13px', color: dark ? c.arena100 : c.bg2, opacity: 0.75, marginTop: '2px' },
+
+      countdown: this.state.countdown,
+      countdownWrapStyle: { textAlign: 'center' },
+      countdownTitleStyle: { fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', color: dark ? c.arena100 : c.bg2, marginBottom: '24px' },
+      countdownBlocksStyle: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? '8px' : '16px', justifyContent: 'center', maxWidth: isMobile ? '100%' : '400px', margin: '0 auto' },
+      countdownBlockStyle: { width: '100%', maxWidth: '80px', aspectRatio: '1', margin: '0 auto', background: dark ? 'rgba(42,45,48,0.7)' : 'rgba(255,252,252,0.62)', backdropFilter: 'blur(4px)', border: `1px solid ${c.salvia500}`, borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
+      countdownNumStyle: { fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, fontSize: isMobile ? '26px' : '32px', color: c.dorado400, animation: 'flipnum 0.5s ease-out' },
+      countdownLabelStyle: { fontFamily: 'Inter, sans-serif', fontSize: isMobile ? '9px' : '11px', textTransform: 'uppercase', color: dark ? c.arena100 : c.bg2, opacity: 0.7, marginTop: '2px' },
+
+      rsvpRef: this.rsvpRef,
+      rsvpVisible: this.state.rsvpVisible,
+      rsvpSectionStyle: { padding: isMobile ? '76px 22px' : '120px 40px', position: 'relative', zIndex: 2, background: 'transparent', overflow: 'hidden' },
+      rsvp: this.state.rsvp,
+      rsvpSubmitted: this.state.rsvpSubmitted,
+      handleRsvpSubmit: (e) => { e.preventDefault(); this.setState({ rsvpSubmitted: true }); },
+      rsvpFormStyle: { textAlign: 'left', background: dark ? 'rgba(26,29,31,0.72)' : 'rgba(255,252,252,0.72)', backdropFilter: 'blur(6px)', padding: isMobile ? '24px 20px' : '40px', borderRadius: '12px', border: `1px solid ${c.border}` },
+      formFieldStyle: { marginBottom: '24px' },
+      formLabelStyle: { display: 'block', fontFamily: 'Inter, sans-serif', fontSize: '13px', fontWeight: 500, color: c.salvia300, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' },
+      inputStyle: { width: '100%', height: '52px', padding: '0 16px', fontFamily: 'Inter, sans-serif', fontSize: '16px', background: dark ? 'rgba(26,29,31,0.75)' : 'rgba(255,255,255,0.82)', border: `1.5px solid ${c.border}`, borderRadius: '8px', color: textOnBg, outline: 'none' },
+      textareaStyle: { width: '100%', minHeight: '96px', padding: '14px 16px', fontFamily: 'Inter, sans-serif', fontSize: '16px', background: dark ? 'rgba(26,29,31,0.75)' : 'rgba(255,255,255,0.82)', border: `1.5px solid ${c.border}`, borderRadius: '8px', color: textOnBg, outline: 'none', resize: 'vertical' },
+      checkboxRowStyle: { display: 'flex', flexDirection: 'column', gap: '12px' },
+      checkboxLabelStyle: { display: 'flex', alignItems: 'center', gap: '12px', minHeight: '44px', fontFamily: 'Inter, sans-serif', fontSize: '15px', color: textOnBg, cursor: 'pointer' },
+      checkboxInputStyle: { width: '18px', height: '18px', accentColor: c.salvia500 },
+      submitButtonStyle: {
+        width: '100%', height: '56px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.05em',
+        color: '#FFFCFC', background: `linear-gradient(135deg, ${c.salvia500}, ${c.salvia700})`, border: 'none', borderRadius: '8px', cursor: 'pointer',
+      },
+      rsvpSuccessStyle: { padding: '48px', textAlign: 'center' },
+      rsvpSuccessIcon: { width: '56px', height: '56px', borderRadius: '50%', background: c.salvia500, color: '#FFFCFC', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', margin: '0 auto 20px' },
+      rsvpSuccessTitle: { fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', color: textOnBg, marginBottom: '10px' },
+      rsvpSuccessText: { fontFamily: 'Inter, sans-serif', fontSize: '15px', color: dark ? c.arena100 : c.bg2 },
+
+      fincaPhotos,
+      agendaDays,
+
+      regaloSectionStyle: { padding: isMobile ? '64px 22px' : '100px 40px', position: 'relative', zIndex: 2, overflow: 'hidden' },
+      giftQuoteStyle: { fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: '28px', color: c.dorado400, marginBottom: '20px', lineHeight: 1.4 },
+      giftTextStyle: { fontFamily: 'Inter, sans-serif', fontSize: '15px', lineHeight: 1.7, color: dark ? c.arena100 : c.bg2 },
+
+      infoRef: this.infoRef,
+      infoVisible: this.state.infoVisible,
+      infoCards,
+      infoGridStyle: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: '24px' },
+      infoCardStyle: { padding: isMobile ? '22px 20px' : '28px', border: `1px solid ${c.border}`, borderRadius: '4px' },
+      infoCardTitle: { fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', color: c.salvia300, marginBottom: '10px', fontWeight: 500 },
+      infoCardText: { fontFamily: 'Inter, sans-serif', fontSize: '14px', lineHeight: 1.6, color: dark ? c.arena100 : c.bg2 },
+
+      footerStyle: { padding: isMobile ? '48px 22px' : '64px 40px', textAlign: 'center', overflow: 'hidden', borderTop: `1px solid ${c.border}`, position: 'relative', zIndex: 2 },
+      footerNameStyle: { position: 'relative', zIndex: 1, fontFamily: "'Great Vibes', cursive", fontSize: '32px', color: c.salvia500, marginBottom: '10px' },
+      footerTextStyle: { position: 'relative', zIndex: 1, fontFamily: 'Inter, sans-serif', fontSize: '14px', color: dark ? c.arena100 : c.bg2, opacity: 0.7 },
+    };
+  }
+}
+
+</script>
+</body>
+</html>
