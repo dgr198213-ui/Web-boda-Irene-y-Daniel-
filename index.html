@@ -205,11 +205,11 @@
         </div>
       </div>
       <div style="height:56px;"></div>
-      <div style="{{ mapPlaceholderStyle }}">
-        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
-          <div style="font-family:Inter,sans-serif;font-size:12px;letter-spacing:0.1em;color:{{ phLabelColor }};opacity:0.6;text-transform:uppercase;">[ mapa interactivo · Google Maps ]</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:{{ phLabelStrong }};">Campillo de Ranas, Guadalajara</div>
-        </div>
+      <div style="{{ mapWrapStyle }}">
+        <iframe src="{{ mapEmbedUrl }}" style="{{ mapIframeStyle }}" loading="lazy" title="Ubicación · Finca Aldea Tejera Negra" referrerPolicy="no-referrer-when-downgrade" allowFullScreen="{{ true }}"></iframe>
+      </div>
+      <div style="{{ mapLinkRowStyle }}">
+        <a href="{{ mapLinkUrl }}" target="_blank" rel="noopener noreferrer" style="{{ mapLinkStyle }}">Ver en Google Maps →</a>
       </div>
     </div>
   </section>
@@ -405,6 +405,8 @@ const PALETTE_LIGHT = {
 };
 
 const WEDDING_DATE = new Date('2027-09-04T17:30:00');
+
+const MAP_QUERY = encodeURIComponent('Finca Aldea Tejera Negra, Campillo de Ranas, Guadalajara');
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -964,7 +966,17 @@ class Component extends DCLogic {
       lugarInfoCard: { padding: isMobile ? '22px 20px' : '28px', border: `1px solid ${c.border}`, borderRadius: '4px' },
       lugarInfoTitle: { fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', color: c.dorado400, marginBottom: '10px', fontWeight: 500 },
       lugarInfoText: { fontFamily: 'Inter, sans-serif', fontSize: '14px', lineHeight: 1.6, color: dark ? c.arena100 : c.bg2 },
-      mapPlaceholderStyle: { position: 'relative', height: '320px', borderRadius: '4px', overflow: 'hidden', background: dark ? 'rgba(26,29,31,0.7)' : 'rgba(243,230,229,0.7)', border: `1px solid ${c.border}` },
+      mapWrapStyle: { position: 'relative', height: '320px', borderRadius: '4px', overflow: 'hidden', background: dark ? 'rgba(26,29,31,0.7)' : 'rgba(243,230,229,0.7)', border: `1px solid ${c.border}` },
+      mapIframeStyle: { position: 'absolute', inset: 0, width: '100%', height: '100%', border: '0', filter: dark ? 'grayscale(0.25) invert(0.9) contrast(0.9)' : 'saturate(0.9) contrast(0.97)' },
+      mapLinkRowStyle: { display: 'flex', justifyContent: 'center', marginTop: '24px' },
+      mapEmbedUrl: `https://www.google.com/maps?q=${MAP_QUERY}&output=embed`,
+      mapLinkUrl: `https://www.google.com/maps/search/?api=1&query=${MAP_QUERY}`,
+      mapLinkStyle: {
+        display: 'inline-flex', alignItems: 'center', gap: '8px',
+        fontFamily: 'Inter, sans-serif', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase',
+        color: c.salvia700, textDecoration: 'none',
+        border: `1.5px solid ${c.salvia500}`, borderRadius: '32px', padding: '12px 28px',
+      },
 
       agendaRef: this.agendaRef,
       agendaVisible: this.state.agendaVisible,
