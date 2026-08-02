@@ -40,7 +40,7 @@
     <p style="font-size:20px;">4 de septiembre de 2027 · 17:30</p>
     <p>Finca Aldea Tejera Negra<br>Campillo de Ranas, Guadalajara</p>
     <p>Esta web necesita JavaScript para mostrarse completa.<br>
-       Si no puedes activarlo, escríbenos a <a href="mailto:CORREO">CORREO</a> para confirmar tu asistencia.</p>
+       Si no puedes activarlo, escríbenos a <a href="mailto:irenegarci972@gmail.com">irenegarci972@gmail.com</a> para confirmar tu asistencia.</p>
   </div>
 </noscript>
 <x-dc>
@@ -323,9 +323,10 @@
       <div style="height:40px;"></div>
       <sc-if value="{{ rsvpNotSubmitted }}" hint-placeholder-val="{{ true }}">
         <form onSubmit="{{ handleRsvpSubmit }}" style="{{ rsvpFormStyle }}">
+          <input type="text" name="website" value="{{ rsvpHoneypot }}" onChange="{{ updateRsvpHoneypot }}" tabIndex="{{ -1 }}" autoComplete="off" aria-hidden="{{ true }}" style="{{ honeypotStyle }}" />
           <div style="{{ formFieldStyle }}">
-            <label style="{{ formLabelStyle }}">Nombre completo</label>
-            <input type="text" required="{{ true }}" value="{{ rsvp.nombre }}" onChange="{{ updateRsvpNombre }}" style="{{ inputStyle }}" placeholder="Tu nombre" />
+            <label htmlFor="rsvp-nombre" style="{{ formLabelStyle }}">Nombre completo</label>
+            <input id="rsvp-nombre" type="text" required="{{ true }}" value="{{ rsvp.nombre }}" onChange="{{ updateRsvpNombre }}" style="{{ inputStyle }}" placeholder="Tu nombre" />
           </div>
           <div style="{{ formFieldStyle }}">
             <label style="{{ formLabelStyle }}">Confirmo asistencia a</label>
@@ -358,14 +359,23 @@
             </div>
           </div>
           <div style="{{ formFieldStyle }}">
-            <label style="{{ formLabelStyle }}">Alergias o intolerancias</label>
-            <textarea value="{{ rsvp.alergias }}" onChange="{{ updateRsvpAlergias }}" style="{{ textareaStyle }}" placeholder="Opcional"></textarea>
+            <label htmlFor="rsvp-alergias" style="{{ formLabelStyle }}">Alergias o intolerancias (opcional)</label>
+            <textarea id="rsvp-alergias" value="{{ rsvp.alergias }}" onChange="{{ updateRsvpAlergias }}" style="{{ textareaStyle }}" placeholder="Opcional"></textarea>
           </div>
           <div style="{{ formFieldStyle }}">
-            <label style="{{ formLabelStyle }}">Comentarios</label>
-            <textarea value="{{ rsvp.comentarios }}" onChange="{{ updateRsvpComentarios }}" style="{{ textareaStyle }}" placeholder="Opcional"></textarea>
+            <label htmlFor="rsvp-comentarios" style="{{ formLabelStyle }}">Comentarios</label>
+            <textarea id="rsvp-comentarios" value="{{ rsvp.comentarios }}" onChange="{{ updateRsvpComentarios }}" style="{{ textareaStyle }}" placeholder="Opcional"></textarea>
           </div>
-          <button type="submit" style="{{ submitButtonStyle }}">Confirmar asistencia</button>
+          <div style="{{ formFieldStyle }}">
+            <label style="{{ consentLabelStyle }}">
+              <input type="checkbox" required="{{ true }}" checked="{{ rsvpConsent }}" onChange="{{ toggleRsvpConsent }}" style="{{ checkboxInputStyle }}" />
+              <span>He leído y acepto el <a href="privacidad.html" target="_blank" rel="noopener noreferrer" style="{{ consentLinkStyle }}">aviso de privacidad</a>. Autorizo el tratamiento de estos datos, incluidas las alergias o intolerancias que indique, con la única finalidad de organizar la boda.</span>
+            </label>
+          </div>
+          <sc-if value="{{ rsvpError }}" hint-placeholder-val="{{ false }}">
+            <div role="alert" style="{{ rsvpErrorStyle }}">{{ rsvpError }}</div>
+          </sc-if>
+          <button type="submit" disabled="{{ rsvpEnviando }}" style="{{ submitButtonStyle }}">{{ rsvpSubmitLabel }}</button>
         </form>
       </sc-if>
       <sc-if value="{{ rsvpSubmitted }}" hint-placeholder-val="{{ false }}">
@@ -421,6 +431,7 @@
     <div style="{{ accFooterR }}"></div>
     <div style="{{ footerNameStyle }}">Irene &amp; Daniel</div>
     <div style="{{ footerTextStyle }}">Gracias por acompañarnos en este camino.</div>
+    <a href="privacidad.html" target="_blank" rel="noopener noreferrer" style="{{ footerLinkStyle }}">Aviso de privacidad</a>
   </footer>
 
 </div>
@@ -444,6 +455,8 @@ const PALETTE_LIGHT = {
 const WEDDING_DATE = new Date('2027-09-04T17:30:00');
 
 const MAP_QUERY = encodeURIComponent('Finca Aldea Tejera Negra, Campillo de Ranas, Guadalajara');
+
+const RSVP_ENDPOINT = 'https://mifjzlmvfuhrxipnfwqu.supabase.co/functions/v1/rsvp';
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -473,6 +486,10 @@ class Component extends DCLogic {
     countdown: { days: '00', hours: '00', minutes: '00', seconds: '00' },
     rsvp: { nombre: '', preboda: true, boda: true, comida: true, menu: 'carne', alergias: '', comentarios: '' },
     rsvpSubmitted: false,
+    rsvpEnviando: false,
+    rsvpError: null,
+    rsvpConsent: false,
+    rsvpHoneypot: '',
     brokenPhotos: {},
   };
 
@@ -1038,18 +1055,52 @@ class Component extends DCLogic {
       rsvpSectionStyle: { padding: isMobile ? '76px 22px' : '120px 40px', position: 'relative', zIndex: 2, background: 'transparent', overflow: 'hidden' },
       rsvp: this.state.rsvp,
       rsvpSubmitted: this.state.rsvpSubmitted,
-      handleRsvpSubmit: (e) => { e.preventDefault(); this.setState({ rsvpSubmitted: true }); },
+      rsvpEnviando: this.state.rsvpEnviando,
+      rsvpError: this.state.rsvpError,
+      rsvpConsent: this.state.rsvpConsent,
+      rsvpHoneypot: this.state.rsvpHoneypot,
+      rsvpSubmitLabel: this.state.rsvpEnviando ? 'Enviando…' : 'Confirmar asistencia',
+      toggleRsvpConsent: (e) => this.setState({ rsvpConsent: e.target.checked }),
+      updateRsvpHoneypot: (e) => this.setState({ rsvpHoneypot: e.target.value }),
+      handleRsvpSubmit: async (e) => {
+        e.preventDefault();
+        if (this.state.rsvpEnviando) return;
+        if (!this.state.rsvpConsent) {
+          this.setState({ rsvpError: 'Necesitamos tu consentimiento para guardar los datos.' });
+          return;
+        }
+        this.setState({ rsvpEnviando: true, rsvpError: null });
+        try {
+          const r = await fetch(RSVP_ENDPOINT, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ ...this.state.rsvp, consentimiento: true, website: this.state.rsvpHoneypot }),
+          });
+          if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'error');
+          this.setState({ rsvpSubmitted: true, rsvpEnviando: false });
+        } catch (err) {
+          this.setState({
+            rsvpEnviando: false,
+            rsvpError: 'No hemos podido guardar tu confirmación. Inténtalo de nuevo o escríbenos.',
+          });
+        }
+      },
       rsvpFormStyle: { textAlign: 'left', background: dark ? 'rgba(26,29,31,0.72)' : 'rgba(255,252,252,0.72)', backdropFilter: 'blur(6px)', padding: isMobile ? '24px 20px' : '40px', borderRadius: '12px', border: `1px solid ${c.border}` },
       formFieldStyle: { marginBottom: '24px' },
       formLabelStyle: { display: 'block', fontFamily: 'Inter, sans-serif', fontSize: '13px', fontWeight: 500, color: c.salvia300, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' },
+      honeypotStyle: { position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' },
       inputStyle: { width: '100%', height: '52px', padding: '0 16px', fontFamily: 'Inter, sans-serif', fontSize: '16px', background: dark ? 'rgba(26,29,31,0.75)' : 'rgba(255,255,255,0.82)', border: `1.5px solid ${c.border}`, borderRadius: '8px', color: textOnBg, outline: 'none' },
       textareaStyle: { width: '100%', minHeight: '96px', padding: '14px 16px', fontFamily: 'Inter, sans-serif', fontSize: '16px', background: dark ? 'rgba(26,29,31,0.75)' : 'rgba(255,255,255,0.82)', border: `1.5px solid ${c.border}`, borderRadius: '8px', color: textOnBg, outline: 'none', resize: 'vertical' },
       checkboxRowStyle: { display: 'flex', flexDirection: 'column', gap: '12px' },
       checkboxLabelStyle: { display: 'flex', alignItems: 'center', gap: '12px', minHeight: '44px', fontFamily: 'Inter, sans-serif', fontSize: '15px', color: textOnBg, cursor: 'pointer' },
-      checkboxInputStyle: { width: '18px', height: '18px', accentColor: c.salvia500 },
+      checkboxInputStyle: { width: '18px', height: '18px', accentColor: c.salvia500, flexShrink: 0 },
+      consentLabelStyle: { display: 'flex', alignItems: 'flex-start', gap: '12px', fontFamily: 'Inter, sans-serif', fontSize: '13.5px', lineHeight: 1.6, color: dark ? c.arena100 : c.bg2, cursor: 'pointer' },
+      consentLinkStyle: { color: c.salvia700, textDecoration: 'underline' },
+      rsvpErrorStyle: { fontFamily: 'Inter, sans-serif', fontSize: '14px', color: '#B3493D', background: dark ? 'rgba(179,73,61,0.12)' : 'rgba(179,73,61,0.08)', border: '1px solid rgba(179,73,61,0.35)', borderRadius: '8px', padding: '12px 16px', marginBottom: '20px' },
       submitButtonStyle: {
         width: '100%', height: '56px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.05em',
-        color: '#FFFCFC', background: `linear-gradient(135deg, ${c.salvia500}, ${c.salvia700})`, border: 'none', borderRadius: '8px', cursor: 'pointer',
+        color: '#FFFCFC', background: `linear-gradient(135deg, ${c.salvia500}, ${c.salvia700})`, border: 'none', borderRadius: '8px',
+        cursor: this.state.rsvpEnviando ? 'default' : 'pointer', opacity: this.state.rsvpEnviando ? 0.7 : 1,
       },
       rsvpSuccessStyle: { padding: '48px', textAlign: 'center' },
       rsvpSuccessIcon: { width: '56px', height: '56px', borderRadius: '50%', background: c.salvia500, color: '#FFFCFC', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', margin: '0 auto 20px' },
@@ -1074,6 +1125,7 @@ class Component extends DCLogic {
       footerStyle: { padding: isMobile ? '48px 22px' : '64px 40px', textAlign: 'center', overflow: 'hidden', borderTop: `1px solid ${c.border}`, position: 'relative', zIndex: 2 },
       footerNameStyle: { position: 'relative', zIndex: 1, fontFamily: "'Great Vibes', cursive", fontSize: '32px', color: c.salvia500, marginBottom: '10px' },
       footerTextStyle: { position: 'relative', zIndex: 1, fontFamily: 'Inter, sans-serif', fontSize: '14px', color: dark ? c.arena100 : c.bg2, opacity: 0.7 },
+      footerLinkStyle: { position: 'relative', zIndex: 1, display: 'inline-block', marginTop: '18px', fontFamily: 'Inter, sans-serif', fontSize: '12px', color: c.salvia700, opacity: 0.85, textDecoration: 'underline' },
     };
   }
 }

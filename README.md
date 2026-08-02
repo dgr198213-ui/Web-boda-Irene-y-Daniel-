@@ -22,18 +22,31 @@ Abre `http://localhost:3000` (o el puerto que indique).
 
 ## RSVP
 
-Las confirmaciones de asistencia se guardan en una tabla `rsvp` de Supabase (proyecto en `eu-central-1`, Frankfurt — hay datos de salud por las alergias). El formulario del sitio llama a una Supabase Edge Function (`supabase/functions/rsvp`) que valida, aplica un límite de envíos por IP y guarda la fila; nunca expone la `service_role key` al navegador.
+Las confirmaciones de asistencia se guardan en una tabla `rsvp` de Supabase — proyecto `irene-daniel-boda` (ref `mifjzlmvfuhrxipnfwqu`), región `eu-central-1` (Frankfurt) — hay datos de salud por las alergias. El formulario del sitio llama a la Edge Function `rsvp` (ya desplegada, `https://mifjzlmvfuhrxipnfwqu.supabase.co/functions/v1/rsvp`, referenciada como `RSVP_ENDPOINT` en `index.html`), que valida, aplica un honeypot y un límite de 5 envíos por IP y hora, y guarda la fila; nunca expone la `service_role key` al navegador. La tabla tiene RLS activado sin políticas: solo la Edge Function (con `service_role`) y tú desde el panel de Supabase podéis leerla.
 
-Ver `supabase/schema.sql` para el esquema y `supabase/functions/rsvp/index.ts` para la función.
+El aviso automático por correo (Brevo) está en el código pero **desactivado** — sin `BREVO_API_KEY` configurada, la función simplemente no lo intenta.
+
+Ver `supabase/migrations/0001_create_rsvp_table.sql` para el esquema y `supabase/functions/rsvp/index.ts` para la función (ambos ya aplicados/desplegados; estos archivos son la referencia versionada).
+
+### Pendiente de configurar a mano
+
+El MCP de Supabase no expone gestión de secretos de Edge Functions, así que esto requiere la CLI (`npm i -g supabase`, `supabase login`, `supabase link --project-ref mifjzlmvfuhrxipnfwqu`) o el panel web (Project Settings → Edge Functions → Secrets):
+
+```bash
+supabase secrets set IP_SALT="$(openssl rand -hex 16)" ALLOWED_ORIGIN="https://TU-DOMINIO-VERCEL"
+# Cuando tengas cuenta de Brevo, además:
+supabase secrets set BREVO_API_KEY=... BREVO_SENDER=... AVISO_EMAIL=...
+```
+
+Sin `IP_SALT`, el hash de IP para el rate-limit sigue funcionando pero con una sal predecible — no es grave (no se guarda la IP en claro), pero conviene fijarlo antes de compartir el enlace ampliamente.
 
 ## Despliegue
 
 Pensado para **Vercel** (plan Hobby, gratuito). Ver `vercel.json` para las cabeceras de seguridad y caché.
 
 Antes de desplegar en producción, sustituir:
-- `TU-DOMINIO` en las etiquetas `og:image` / `og:url` de `index.html` (deben ser URLs absolutas).
-- `RSVP_ENDPOINT` en `index.html` con la URL real de la Edge Function.
-- Los secretos de la Edge Function (`IP_SALT`, `BREVO_API_KEY`, `BREVO_SENDER`, `AVISO_EMAIL`, `ALLOWED_ORIGIN`).
+- `TU-DOMINIO` en las etiquetas `og:image` / `og:url` de `index.html` (deben ser URLs absolutas). Por ahora apuntan al subdominio `*.vercel.app` que asigne el despliegue.
+- El secreto `ALLOWED_ORIGIN` de la Edge Function (ver arriba) con ese mismo dominio.
 
 ## Tareas de calendario
 
