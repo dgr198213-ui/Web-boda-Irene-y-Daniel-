@@ -1,0 +1,17 @@
+name: check
+on: [push, pull_request]
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comprobar que existen todos los assets referenciados
+        run: |
+          fail=0
+          for f in $(grep -oE '(uploads|assets|fonts|vendor)/[A-Za-z0-9._-]+\.[A-Za-z0-9]+' index.html | sort -u); do
+            [ -e "$f" ] || { echo "FALTA: $f"; fail=1; }
+          done
+          for n in leaf sprig-a sprig-b sprig-c sprig-d fernful-a fernful-b lavbunch yewberry wildmix crown frond; do
+            [ -e "assets/b2-$n.png" ] || { echo "FALTA: assets/b2-$n.png"; fail=1; }
+          done
+          exit $fail

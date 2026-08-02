@@ -42,11 +42,19 @@ Sin `IP_SALT`, el hash de IP para el rate-limit sigue funcionando pero con una s
 
 ## Despliegue
 
-Pensado para **Vercel** (plan Hobby, gratuito). Ver `vercel.json` para las cabeceras de seguridad y caché.
+Pensado para **Vercel** (plan Hobby, gratuito). `vercel.json` ya trae las cabeceras de seguridad y caché.
 
-Antes de desplegar en producción, sustituir:
-- `TU-DOMINIO` en las etiquetas `og:image` / `og:url` de `index.html` (deben ser URLs absolutas). Por ahora apuntan al subdominio `*.vercel.app` que asigne el despliegue.
-- El secreto `ALLOWED_ORIGIN` de la Edge Function (ver arriba) con ese mismo dominio.
+El sitio pesa ~5 MB (sobre todo `uploads/`), así que la forma correcta de desplegarlo es la integración estándar de Vercel con Git, no una subida de archivos suelta:
+
+1. En [vercel.com](https://vercel.com) → **Add New… → Project → Import Git Repository** → selecciona `dgr198213-ui/Web-boda-Irene-y-Daniel-` (rama `claude/irene-daniel-design-y1fzvg` o la que sea la rama por defecto). Vercel detecta que es un sitio estático (no hay `package.json`) y no necesita build command ni output directory.
+2. Activa **Web Analytics** en el proyecto (Settings → Analytics) — no usa cookies, así que no hace falta banner.
+3. Con el dominio ya asignado (el `*.vercel.app` por defecto, o uno propio si lo compras), sustituir:
+   - `TU-DOMINIO` en las etiquetas `og:image` / `og:url` de `index.html` (deben ser URLs absolutas).
+   - El secreto `ALLOWED_ORIGIN` de la Edge Function (ver arriba) con ese mismo dominio.
+
+## CI
+
+`.github/workflows/check.yml` falla el build si `index.html` referencia algún archivo en `uploads/`, `assets/`, `fonts/` o `vendor/` que no exista en el repo (incluidos los 12 PNG botánicos con nombre dinámico `assets/b2-${nombre}.png`). Esto es justo lo que habría detectado los dos fallos críticos de la auditoría original (assets que faltaban).
 
 ## Tareas de calendario
 
