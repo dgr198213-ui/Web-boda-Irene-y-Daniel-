@@ -53,6 +53,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body { -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 3px solid #8AA096; outline-offset: 2px; border-radius: 4px; }
   @keyframes bounce { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(10px); opacity: 1; } }
   @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
   @keyframes flipnum { 0% { transform: rotateX(90deg); opacity: 0; } 100% { transform: rotateX(0); opacity: 1; } }
@@ -70,7 +71,7 @@
 <div style="{{ pageStyle }}">
 
   <div style="{{ ambienceWrapStyle }}">
-    <sc-for list="{{ scenes }}" as="scene" hint-placeholder-count="6">
+    <sc-for list="{{ scenes }}" as="scene" hint-placeholder-count="7">
       <div style="{{ scene.style }}"></div>
     </sc-for>
     <div style="{{ vignetteStyle }}"></div>
@@ -87,7 +88,7 @@
       <a href="#rsvp" style="{{ navLinkStyle }}">RSVP</a>
       <a href="#info" style="{{ navLinkStyle }}">Info</a>
     </div>
-    <button onClick="{{ toggleMenu }}" style="{{ hamburgerStyle }}" aria-label="Menú">
+    <button onClick="{{ toggleMenu }}" style="{{ hamburgerStyle }}" aria-label="Menú" aria-expanded="{{ menuOpen }}" aria-controls="menu-movil">
       <span style="{{ hamburgerLine1 }}"></span>
       <span style="{{ hamburgerLine2 }}"></span>
       <span style="{{ hamburgerLine3 }}"></span>
@@ -95,7 +96,7 @@
   </nav>
 
   <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
-    <div style="{{ mobileMenuStyle }}">
+    <div id="menu-movil" style="{{ mobileMenuStyle }}">
       <a href="#historia" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">Historia</a>
       <a href="#manada" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">La manada</a>
       <a href="#lugar" onClick="{{ toggleMenu }}" style="{{ mobileLinkStyle }}">Lugar</a>
@@ -153,7 +154,12 @@
       <sc-for list="{{ timeline }}" as="item" hint-placeholder-count="4">
         <div style="{{ item.rowStyle }}">
           <div style="{{ item.imgWrapStyle }}">
-            <div style="{{ item.photoBgStyle }}"></div>
+            <sc-if value="{{ item.hasPhoto }}" hint-placeholder-val="{{ false }}">
+              <picture>
+                <source srcset="{{ item.photoWebp }}" type="image/webp" />
+                <img src="{{ item.photoSrc }}" alt="{{ item.title }}" loading="lazy" decoding="async" style="{{ item.imgStyle }}" />
+              </picture>
+            </sc-if>
             <sc-if value="{{ item.noPhoto }}" hint-placeholder-val="{{ true }}">
               <div style="{{ timelineImgStripes }}"></div>
               <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Inter,sans-serif;font-size:10px;letter-spacing:0.08em;color:{{ phLabelColor }};opacity:0.55;padding:8px;">{{ item.photoLabel }}</div>
@@ -194,7 +200,12 @@
             <div style="{{ pet.photoWrapStyle }}">
             <div style="{{ pet.leafStyle }}"></div>
             <div style="{{ pet.photoStyle }}">
-              <div style="{{ pet.photoBgStyle }}"></div>
+              <sc-if value="{{ pet.hasPhoto }}" hint-placeholder-val="{{ false }}">
+                <picture>
+                  <source srcset="{{ pet.photoWebp }}" type="image/webp" />
+                  <img src="{{ pet.photo }}" alt="{{ pet.photoAlt }}" loading="lazy" decoding="async" style="{{ pet.imgStyle }}" />
+                </picture>
+              </sc-if>
               <sc-if value="{{ pet.noPhoto }}" hint-placeholder-val="{{ true }}">
                 <div style="{{ petStripesStyle }}"></div>
                 <div style="position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;text-align:center;font-family:Inter,sans-serif;font-size:10px;letter-spacing:0.08em;color:{{ phLabelColor }};opacity:0.55;padding:14px;">{{ pet.photoLabel }}</div>
@@ -313,15 +324,15 @@
             <div style="{{ countdownLabelStyle }}">Días</div>
           </div>
           <div style="{{ countdownBlockStyle }}">
-            <div key="{{ countdown.hours }}" style="{{ countdownNumStyle }}">{{ countdown.hours }}</div>
+            <div ref="{{ countdownHoursRef }}" style="{{ countdownNumStyle }}">{{ countdown.hours }}</div>
             <div style="{{ countdownLabelStyle }}">Horas</div>
           </div>
           <div style="{{ countdownBlockStyle }}">
-            <div key="{{ countdown.minutes }}" style="{{ countdownNumStyle }}">{{ countdown.minutes }}</div>
+            <div ref="{{ countdownMinutesRef }}" style="{{ countdownNumStyle }}">{{ countdown.minutes }}</div>
             <div style="{{ countdownLabelStyle }}">Min</div>
           </div>
           <div style="{{ countdownBlockStyle }}">
-            <div key="{{ countdown.seconds }}" style="{{ countdownNumStyle }}">{{ countdown.seconds }}</div>
+            <div ref="{{ countdownSecondsRef }}" style="{{ countdownNumStyle }}">{{ countdown.seconds }}</div>
             <div style="{{ countdownLabelStyle }}">Seg</div>
           </div>
         </div>
@@ -466,11 +477,11 @@ const PALETTE_DARK = {
 const PALETTE_LIGHT = {
   bg: '#3B3134', bg2: '#6E5F62', border: '#EFE0DF',
   arena50: '#FFFCFC', arena100: '#FDF6F5',
-  salvia500: '#8AA096', salvia300: '#6F8A80', salvia700: '#6B8278',
+  salvia500: '#8AA096', salvia300: '#5F766E', salvia700: '#6B8278',
   dorado400: '#BF8B65', dorado200: '#D9B294',
 };
 
-const WEDDING_DATE = new Date('2027-09-04T17:30:00');
+const WEDDING_DATE = new Date('2027-09-04T17:30:00+02:00');
 
 const MAP_QUERY = encodeURIComponent('Finca Aldea Tejera Negra, Campillo de Ranas, Guadalajara');
 
@@ -521,6 +532,9 @@ class Component extends DCLogic {
   agendaRef = React.createRef();
   rsvpRef = React.createRef();
   infoRef = React.createRef();
+  countdownHoursRef = React.createRef();
+  countdownMinutesRef = React.createRef();
+  countdownSecondsRef = React.createRef();
 
   componentDidMount() {
     this._playHero = () => {
@@ -538,7 +552,7 @@ class Component extends DCLogic {
     ['click', 'touchstart', 'scroll', 'keydown'].forEach(ev =>
       document.addEventListener(ev, this._playHero, { once: true, passive: true })
     );
-    this._onVis = () => { if (document.hidden) { cancelAnimationFrame(this._raf); } else if (this._tick) { this._raf = requestAnimationFrame(this._tick); } };
+    this._onVis = () => { if (document.hidden) { cancelAnimationFrame(this._raf); } else if (this._drawParticles) { this._raf = requestAnimationFrame(this._drawParticles); } };
     document.addEventListener('visibilitychange', this._onVis);
     this._tick();
     this._interval = setInterval(this._tick, 1000);
@@ -556,6 +570,7 @@ class Component extends DCLogic {
     [this.historiaRef, this.manadaRef, this.lugarRef, this.agendaRef, this.rsvpRef, this.infoRef].forEach((r) => {
       if (r.current) this._observer.observe(r.current);
     });
+    this._sectionEls = ['hero', 'historia', 'manada', 'lugar', 'agenda', 'rsvp', 'info'].map((id) => document.getElementById(id));
     window.addEventListener('scroll', this._onScroll, { passive: true });
     window.addEventListener('resize', this._onResize, { passive: true });
     this._startParticles();
@@ -587,7 +602,7 @@ class Component extends DCLogic {
     window.addEventListener('resize', resize, { passive: true });
 
     const lightTheme = !(this.props.darkMode ?? false);
-    const density = (this.props.particleDensity ?? 0.6) * (window.innerWidth < 768 ? 0.5 : 1);
+    const density = (this.props.particleDensity ?? 1) * (window.innerWidth < 768 ? 0.5 : 1);
     const moteCount = Math.round(38 * density);
     const leafCount = Math.round(16 * density);
     const rand = (a, b) => a + Math.random() * (b - a);
@@ -632,6 +647,7 @@ class Component extends DCLogic {
       });
       this._raf = requestAnimationFrame(draw);
     };
+    this._drawParticles = draw;
     draw();
   }
 
@@ -648,6 +664,7 @@ class Component extends DCLogic {
     if (this._observer) this._observer.disconnect();
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onResize);
+    document.removeEventListener('visibilitychange', this._onVis);
     if (this._raf) cancelAnimationFrame(this._raf);
     if (this._canvasResize) window.removeEventListener('resize', this._canvasResize);
   }
@@ -658,30 +675,51 @@ class Component extends DCLogic {
   };
 
   _onScroll = () => {
+    if (this._scrollTicking) return;
+    this._scrollTicking = true;
+    requestAnimationFrame(this._onScrollFrame);
+  };
+
+  _onScrollFrame = () => {
+    this._scrollTicking = false;
     const y = window.scrollY;
     const scrolled = y > 40;
     const next = {};
     if (scrolled !== this.state.scrolled) next.scrolled = scrolled;
-    const ids = ['hero', 'historia', 'lugar', 'agenda', 'rsvp', 'info'];
     const mid = window.innerHeight * 0.45;
     let active = 0;
-    ids.forEach((id, i) => {
-      const el = document.getElementById(id);
+    (this._sectionEls || []).forEach((el, i) => {
       if (el && el.getBoundingClientRect().top <= mid) active = i;
     });
     if (active !== this.state.activeScene) next.activeScene = active;
     if (Object.keys(next).length) this.setState(next);
   };
 
+  _writeCountdownNode = (ref, value) => {
+    const el = ref.current;
+    if (!el) return;
+    el.textContent = value;
+    el.style.animation = 'none';
+    void el.offsetWidth; // fuerza reflow para reiniciar la animación
+    el.style.animation = 'flipnum 0.5s ease-out';
+  };
+
   _tick = () => {
     const now = new Date();
     let diff = WEDDING_DATE.getTime() - now.getTime();
     if (diff < 0) diff = 0;
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
-    this.setState({ countdown: { days: pad(days), hours: pad(hours), minutes: pad(minutes), seconds: pad(seconds) } });
+    const days = pad(Math.floor(diff / (1000 * 60 * 60 * 24)));
+    const hours = pad(Math.floor((diff / (1000 * 60 * 60)) % 24));
+    const minutes = pad(Math.floor((diff / (1000 * 60)) % 60));
+    const seconds = pad(Math.floor((diff / 1000) % 60));
+    // Horas/min/seg se escriben directamente en el DOM vía refs, sin setState,
+    // para no reconstruir todos los estilos de renderVals() cada segundo.
+    this._writeCountdownNode(this.countdownHoursRef, hours);
+    this._writeCountdownNode(this.countdownMinutesRef, minutes);
+    this._writeCountdownNode(this.countdownSecondsRef, seconds);
+    if (days !== this.state.countdown.days) {
+      this.setState({ countdown: { days, hours, minutes, seconds } });
+    }
   };
 
   renderVals() {
@@ -714,13 +752,14 @@ class Component extends DCLogic {
         opacity: 0.9,
         ...(i % 2 ? { top: '-16px', right: '-22px', rotate: '150deg' } : { bottom: '-14px', left: '-20px', rotate: '-18deg' }),
       };
-      p.photoBgStyle = petPhotoOk ? {
-        position: 'absolute', inset: 0,
-        backgroundImage: `url(${p.photo})`,
-        backgroundSize: 'cover',
-        backgroundPosition: p.focus || 'center 30%',
+      p.hasPhoto = petPhotoOk;
+      p.photoAlt = `${p.name}, ${p.breed}`;
+      p.photoWebp = p.photo ? p.photo.replace(/\.jpg$/i, '.webp') : '';
+      p.imgStyle = {
+        position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+        objectPosition: p.focus || 'center 30%',
         filter: dark ? 'saturate(0.85) brightness(0.9)' : 'saturate(0.9) contrast(0.97)',
-      } : null;
+      };
       p.cardStyle = {
         textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center',
         marginTop: this.state.isMobile ? 0 : (i === 1 ? '0px' : '40px'),
@@ -817,14 +856,16 @@ class Component extends DCLogic {
       'uploads/IMG-20260728-WA0029.jpg',
       'uploads/IMG-20260728-WA0012.jpg',
     ];
-    const timelinePhotoStyle = { position: 'absolute', inset: 0, backgroundSize: 'cover', backgroundPosition: 'center', filter: dark ? 'saturate(0.85) brightness(0.9)' : 'saturate(0.9) contrast(0.97)' };
+    const timelinePhotoStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: dark ? 'saturate(0.85) brightness(0.9)' : 'saturate(0.9) contrast(0.97)' };
     const timelineImgStripes = { position: 'absolute', inset: 0, background: stripesBg(dark ? '#31353A' : '#F2E5E4', dark ? '#23272A' : '#FBF3F2') };
     const timelineTextWrapStyle = { direction: 'ltr', maxWidth: '460px' };
     timeline.forEach((item, i) => {
       const chapterOk = !!(chapterPhotos[i] && !this.state.brokenPhotos[chapterPhotos[i]]);
       item.rowStyle = timelineRowStyleFor(i);
       item.imgWrapStyle = timelineImgWrapStyle;
-      item.photoBgStyle = chapterOk ? { ...timelinePhotoStyle, backgroundImage: `url(${chapterPhotos[i]})` } : null;
+      item.photoSrc = chapterPhotos[i];
+      item.photoWebp = chapterPhotos[i] ? chapterPhotos[i].replace(/\.jpg$/i, '.webp') : '';
+      item.imgStyle = timelinePhotoStyle;
       item.hasPhoto = chapterOk;
       item.noPhoto = !chapterOk;
       item.textWrapStyle = timelineTextWrapStyle;
@@ -845,6 +886,7 @@ class Component extends DCLogic {
     const lightScenes = [
       `radial-gradient(1100px 720px at 50% 14%, rgba(240,214,213,0.75), rgba(253,246,245,0) 72%), radial-gradient(820px 820px at 82% 88%, rgba(224,208,204,0.42), rgba(253,246,245,0) 70%)`,
       `radial-gradient(900px 640px at 18% 24%, rgba(243,222,214,0.62), rgba(253,246,245,0) 70%), radial-gradient(760px 660px at 86% 72%, rgba(219,214,206,0.40), rgba(253,246,245,0) 70%)`,
+      `radial-gradient(950px 680px at 25% 20%, rgba(220,224,200,0.55), rgba(253,246,245,0) 70%), radial-gradient(800px 700px at 80% 75%, rgba(235,220,205,0.42), rgba(253,246,245,0) 70%)`,
       `radial-gradient(1000px 720px at 72% 18%, rgba(233,221,222,0.60), rgba(253,246,245,0) 70%), radial-gradient(680px 680px at 14% 80%, rgba(240,219,218,0.48), rgba(253,246,245,0) 70%)`,
       `radial-gradient(860px 660px at 50% 44%, rgba(246,226,208,0.52), rgba(253,246,245,0) 68%), radial-gradient(760px 760px at 12% 24%, rgba(240,214,213,0.38), rgba(253,246,245,0) 70%)`,
       `radial-gradient(940px 740px at 30% 28%, rgba(228,222,215,0.48), rgba(253,246,245,0) 70%), radial-gradient(840px 660px at 88% 76%, rgba(242,216,214,0.44), rgba(253,246,245,0) 70%)`,
@@ -855,6 +897,8 @@ class Component extends DCLogic {
       `radial-gradient(1200px 780px at 50% 18%, rgba(58,72,70,0.55), rgba(16,19,20,0) 70%), radial-gradient(900px 900px at 80% 90%, rgba(107,130,120,0.18), rgba(16,19,20,0) 70%)`,
       // historia — atardecer entre hojas
       `radial-gradient(1000px 700px at 18% 26%, rgba(96,90,66,0.42), rgba(16,19,20,0) 68%), radial-gradient(800px 700px at 85% 70%, rgba(107,130,120,0.22), rgba(16,19,20,0) 70%)`,
+      // manada — claro entre helechos
+      `radial-gradient(1050px 720px at 25% 22%, rgba(90,100,70,0.40), rgba(16,19,20,0) 70%), radial-gradient(850px 750px at 78% 78%, rgba(107,130,120,0.20), rgba(16,19,20,0) 70%)`,
       // lugar — noche de pizarra
       `radial-gradient(1100px 800px at 70% 20%, rgba(60,80,78,0.38), rgba(16,19,20,0) 70%), radial-gradient(700px 700px at 15% 80%, rgba(38,48,46,0.5), rgba(16,19,20,0) 70%)`,
       // agenda — interior a la luz de las velas
@@ -1082,15 +1126,18 @@ class Component extends DCLogic {
       agendaTimeStyle: { fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '16px', color: c.dorado400, minWidth: '56px' },
       agendaEventTextWrap: {},
       agendaEventName: { fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', color: textOnBg },
-      agendaEventDesc: { fontFamily: 'Inter, sans-serif', fontSize: '13px', color: dark ? c.arena100 : c.bg2, opacity: 0.75, marginTop: '2px' },
+      agendaEventDesc: { fontFamily: 'Inter, sans-serif', fontSize: '13px', color: dark ? c.arena100 : c.bg2, opacity: 0.92, marginTop: '2px' },
 
       countdown: this.state.countdown,
+      countdownHoursRef: this.countdownHoursRef,
+      countdownMinutesRef: this.countdownMinutesRef,
+      countdownSecondsRef: this.countdownSecondsRef,
       countdownWrapStyle: { textAlign: 'center' },
       countdownTitleStyle: { fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', color: dark ? c.arena100 : c.bg2, marginBottom: '24px' },
       countdownBlocksStyle: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? '8px' : '16px', justifyContent: 'center', maxWidth: isMobile ? '100%' : '400px', margin: '0 auto' },
       countdownBlockStyle: { width: '100%', maxWidth: '80px', aspectRatio: '1', margin: '0 auto', background: dark ? 'rgba(42,45,48,0.7)' : 'rgba(255,252,252,0.62)', backdropFilter: 'blur(4px)', border: `1px solid ${c.salvia500}`, borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
       countdownNumStyle: { fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, fontSize: isMobile ? '26px' : '32px', color: c.dorado400, animation: 'flipnum 0.5s ease-out' },
-      countdownLabelStyle: { fontFamily: 'Inter, sans-serif', fontSize: isMobile ? '9px' : '11px', textTransform: 'uppercase', color: dark ? c.arena100 : c.bg2, opacity: 0.7, marginTop: '2px' },
+      countdownLabelStyle: { fontFamily: 'Inter, sans-serif', fontSize: isMobile ? '9px' : '11px', textTransform: 'uppercase', color: dark ? c.arena100 : c.bg2, opacity: 0.92, marginTop: '2px' },
 
       rsvpRef: this.rsvpRef,
       rsvpVisible: this.state.rsvpVisible,
@@ -1131,8 +1178,8 @@ class Component extends DCLogic {
       formFieldStyle: { marginBottom: '24px' },
       formLabelStyle: { display: 'block', fontFamily: 'Inter, sans-serif', fontSize: '13px', fontWeight: 500, color: c.salvia300, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' },
       honeypotStyle: { position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' },
-      inputStyle: { width: '100%', height: '52px', padding: '0 16px', fontFamily: 'Inter, sans-serif', fontSize: '16px', background: dark ? 'rgba(26,29,31,0.75)' : 'rgba(255,255,255,0.82)', border: `1.5px solid ${c.border}`, borderRadius: '8px', color: textOnBg, outline: 'none' },
-      textareaStyle: { width: '100%', minHeight: '96px', padding: '14px 16px', fontFamily: 'Inter, sans-serif', fontSize: '16px', background: dark ? 'rgba(26,29,31,0.75)' : 'rgba(255,255,255,0.82)', border: `1.5px solid ${c.border}`, borderRadius: '8px', color: textOnBg, outline: 'none', resize: 'vertical' },
+      inputStyle: { width: '100%', height: '52px', padding: '0 16px', fontFamily: 'Inter, sans-serif', fontSize: '16px', background: dark ? 'rgba(26,29,31,0.75)' : 'rgba(255,255,255,0.82)', border: `1.5px solid ${c.border}`, borderRadius: '8px', color: textOnBg },
+      textareaStyle: { width: '100%', minHeight: '96px', padding: '14px 16px', fontFamily: 'Inter, sans-serif', fontSize: '16px', background: dark ? 'rgba(26,29,31,0.75)' : 'rgba(255,255,255,0.82)', border: `1.5px solid ${c.border}`, borderRadius: '8px', color: textOnBg, resize: 'vertical' },
       checkboxRowStyle: { display: 'flex', flexDirection: 'column', gap: '12px' },
       checkboxLabelStyle: { display: 'flex', alignItems: 'center', gap: '12px', minHeight: '44px', fontFamily: 'Inter, sans-serif', fontSize: '15px', color: textOnBg, cursor: 'pointer' },
       checkboxInputStyle: { width: '18px', height: '18px', accentColor: c.salvia500, flexShrink: 0 },
@@ -1166,7 +1213,7 @@ class Component extends DCLogic {
 
       footerStyle: { padding: isMobile ? '48px 22px' : '64px 40px', textAlign: 'center', overflow: 'hidden', borderTop: `1px solid ${c.border}`, position: 'relative', zIndex: 2 },
       footerNameStyle: { position: 'relative', zIndex: 1, fontFamily: "'Great Vibes', cursive", fontSize: '32px', color: c.salvia500, marginBottom: '10px' },
-      footerTextStyle: { position: 'relative', zIndex: 1, fontFamily: 'Inter, sans-serif', fontSize: '14px', color: dark ? c.arena100 : c.bg2, opacity: 0.7 },
+      footerTextStyle: { position: 'relative', zIndex: 1, fontFamily: 'Inter, sans-serif', fontSize: '14px', color: dark ? c.arena100 : c.bg2, opacity: 0.92 },
       footerLinkStyle: { position: 'relative', zIndex: 1, display: 'inline-block', marginTop: '18px', fontFamily: 'Inter, sans-serif', fontSize: '12px', color: c.salvia700, opacity: 0.85, textDecoration: 'underline' },
     };
   }
