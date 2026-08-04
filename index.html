@@ -463,6 +463,11 @@
     <a href="privacidad.html" target="_blank" rel="noopener noreferrer" style="{{ footerLinkStyle }}">Aviso de privacidad</a>
   </footer>
 
+  <audio ref="{{ audioRef }}" src="uploads/audio/musica-fondo.mp3" loop="{{ true }}" preload="none"></audio>
+  <button onClick="{{ toggleMusic }}" aria-pressed="{{ musicPlaying }}" aria-label="{{ musicPlaying ? 'Silenciar música' : 'Activar música' }}" style="{{ musicButtonStyle }}">
+    {{ musicPlaying ? '🔊' : '🔈' }}
+  </button>
+
 </div>
 
 </x-dc>
@@ -490,6 +495,7 @@ const RSVP_ENDPOINT = 'https://mifjzlmvfuhrxipnfwqu.supabase.co/functions/v1/rsv
 function pad(n) { return String(n).padStart(2, '0'); }
 
 const PHOTO_PATHS = [
+  'uploads/IMG-20260728-WA0021.jpg',
   'uploads/IMG-20260728-WA0023.jpg',
   'uploads/IMG-20260728-WA0004.jpg',
   'uploads/IMG-20260130-WA0018.jpg',
@@ -521,9 +527,11 @@ class Component extends DCLogic {
     rsvpHoneypot: '',
     mapaAceptado: false,
     brokenPhotos: {},
+    musicPlaying: false,
   };
 
   canvasRef = React.createRef();
+  audioRef = React.createRef();
   heroRef = React.createRef();
   heroVideoRef = React.createRef();
   historiaRef = React.createRef();
@@ -1011,6 +1019,23 @@ class Component extends DCLogic {
       hamburgerLine3: { width: '100%', height: '2px', background: textOnBg, transition: 'transform 0.3s ease', transform: this.state.menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' },
       menuOpen: this.state.menuOpen,
       toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      musicPlaying: this.state.musicPlaying,
+      audioRef: this.audioRef,
+      toggleMusic: () => {
+        const el = this.audioRef.current;
+        if (!el) return;
+        if (this.state.musicPlaying) { el.pause(); this.setState({ musicPlaying: false }); }
+        else { el.play().catch(() => {}); this.setState({ musicPlaying: true }); }
+      },
+      musicButtonStyle: {
+        position: 'fixed', bottom: '24px', right: '24px', zIndex: 100,
+        width: '44px', height: '44px', borderRadius: '50%',
+        background: dark ? 'rgba(42,45,48,0.85)' : 'rgba(255,252,252,0.85)',
+        backdropFilter: 'blur(8px)', border: `1px solid ${c.salvia500}`,
+        color: c.salvia700, fontSize: '18px', display: 'flex',
+        alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.12)', transition: 'all 0.3s ease',
+      },
       mobileMenuStyle: {
         position: 'fixed', top: '72px', left: 0, right: 0, zIndex: 29,
         background: dark ? 'rgba(26,29,31,0.97)' : 'rgba(253,246,245,0.97)', backdropFilter: 'blur(14px)',
