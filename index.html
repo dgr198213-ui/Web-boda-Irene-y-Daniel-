@@ -734,9 +734,6 @@ class Component extends DCLogic {
     const c = dark ? PALETTE_DARK : PALETTE_LIGHT;
     const bgPage = dark ? c.bg : c.arena100;
     const textOnBg = dark ? c.arena50 : c.bg;
-    const isMobile = this.state.isMobile;
-    const heroPosterSrc = isMobile ? 'uploads/hero-mobile-poster.jpg' : 'uploads/hero-poster.jpg';
-
     const timeline = [
       { date: 'Capítulo I · El encuentro', title: 'Una carta que no esperábamos', description: 'No hubo señales ni presagios: solo una conversación que se alargó más de lo previsto y la extraña sensación de reconocer a alguien por primera vez.', photoLabel: 'foto: primer encuentro' },
       { date: 'Capítulo II · El hechizo cotidiano', title: 'Magia de todos los días', description: 'Aprendimos que lo extraordinario vive en lo pequeño: un café a medias, plantas que sobreviven de milagro, canciones repetidas hasta gastarlas.', photoLabel: 'foto: vida cotidiana' },
@@ -847,6 +844,7 @@ class Component extends DCLogic {
     });
 
     const isMobile = this.state.isMobile;
+    const heroPosterSrc = isMobile ? 'uploads/hero-mobile-poster.jpg' : 'uploads/hero-poster.jpg';
     const timelineRowStyleFor = (i) => {
       const left = i % 2 === 0;
       if (isMobile) return { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '24px', marginBottom: '56px' };
