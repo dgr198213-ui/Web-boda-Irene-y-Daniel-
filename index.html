@@ -1053,7 +1053,7 @@ class Component extends DCLogic {
       heroVideoSrc: isMobile ? 'uploads/hero-mobile.mp4' : 'uploads/gemini_generated_video_375292e2.mp4',
       heroPosterSrc: isMobile ? 'uploads/hero-mobile-poster.jpg' : 'uploads/hero-poster.jpg',
       heroPosterStyle: {
-        position: 'absolute', inset: 0, backgroundImage: 'url(uploads/hero-poster.jpg)', backgroundSize: 'cover', backgroundPosition: 'center',
+        position: 'absolute', inset: 0, backgroundImage: `url(${heroPosterSrc})`, backgroundSize: 'cover', backgroundPosition: 'center',
         filter: dark ? 'saturate(0.9) brightness(0.85)' : 'saturate(0.86) brightness(1.06) contrast(0.96)',
       },
       heroOverlayStyle: { position: 'absolute', inset: 0, background: dark ? 'radial-gradient(circle at 50% 40%, rgba(26,29,31,0.35), rgba(26,29,31,0.82))' : 'radial-gradient(circle at 50% 38%, rgba(253,246,245,0.34), rgba(247,236,235,0.78))' },
