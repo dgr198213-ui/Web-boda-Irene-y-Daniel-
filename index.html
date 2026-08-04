@@ -548,13 +548,11 @@ class Component extends DCLogic {
   componentDidMount() {
     this._playHero = () => {
       const v = this.heroVideoRef.current;
-      if (!v) return;
-      v.muted = true;
-      v.defaultMuted = true;
-      v.playsInline = true;
-      v.loop = true;
-      const p = v.play();
-      if (p && p.catch) p.catch(() => {});
+      if (v) v.play().catch(() => {});
+      const a = this.audioRef.current;
+      if (a && !this.state.musicPlaying) {
+        a.play().then(() => this.setState({ musicPlaying: true })).catch(() => {});
+      }
     };
     setTimeout(this._playHero, 0);
     setTimeout(this._playHero, 600);
@@ -744,10 +742,9 @@ class Component extends DCLogic {
       { date: 'Capítulo IV · La promesa', title: 'Un sí entre flores y pizarra', description: 'Elegimos la Sierra Norte para decirlo en voz alta, rodeados de bosque, velas y de las personas que han escrito esta historia con nosotros.', photoLabel: 'foto: la propuesta' },
     ];
 
-    const pets = [
-      { name: 'Bruno', breed: 'Podenco', photo: 'uploads/IMG-20260728-WA0021.jpg', photoLabel: 'foto: Bruno', description: 'El más largo de patas y de paciencia. Explora cada camino tres veces antes de decidir por dónde vamos y siempre encuentra la única mancha de sol de la casa.' },
-  'uploads/hero-mobile-poster.jpg',
-      { name: 'Rocco', breed: 'Chihuahua', photo: 'uploads/IMG-20260728-WA0023.jpg', photoLabel: 'foto: Rocco', description: 'El último en llegar y el que puso la casa del revés en una semana. Pequeño, opinable y con alma de guardián: ladra a lo imposible y se rinde en cuanto le rascas la barriga.' },
+	    const pets = [
+	      { name: 'Bruno', breed: 'Podenco', photo: 'uploads/IMG-20260728-WA0021.jpg', photoLabel: 'foto: Bruno', description: 'El más largo de patas y de paciencia. Explora cada camino tres veces antes de decidir por dónde vamos y siempre encuentra la única mancha de sol de la casa.' },
+	      { name: 'Rocco', breed: 'Chihuahua', photo: 'uploads/IMG-20260728-WA0023.jpg', photoLabel: 'foto: Rocco', description: 'El último en llegar y el que puso la casa del revés en una semana. Pequeño, opinable y con alma de guardián: ladra a lo imposible y se rinde en cuanto le rascas la barriga.' },
       { name: 'Junior', breed: 'Chihuahua mini', photo: 'uploads/IMG-20260728-WA0015.jpg', focus: '46% 42%', photoLabel: 'foto: Junior', description: 'El primero de todos: ya era la sombra de Daniel antes de que Irene apareciera. Cabe en una mano, ocupa media cama y si hay manta, hay Junior debajo.' },
     ];
     pets.forEach((p, i) => {
