@@ -54,7 +54,7 @@
   html { scroll-behavior: smooth; }
   body { -webkit-font-smoothing: antialiased; }
   :focus-visible { outline: 3px solid #8AA096; outline-offset: 2px; border-radius: 4px; }
-  @keyframes bounce { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(10px); opacity: 1; } }
+      @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
   @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
   @keyframes flipnum { 0% { transform: rotateX(90deg); opacity: 0; } 100% { transform: rotateX(0); opacity: 1; } }
   @keyframes drift { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-14px) translateX(8px); } 100% { transform: translateY(0) translateX(0); } }
@@ -1074,7 +1074,11 @@ class Component extends DCLogic {
       ornamentDiamond: { width: '6px', height: '6px', background: c.salvia500, transform: 'rotate(45deg)' },
       ornamentDot: { width: '7px', height: '7px', borderRadius: '50%', background: c.dorado400, boxShadow: dark ? `0 0 8px ${c.dorado400}` : 'none' },
       ornamentCenteredStyle: { display: 'flex', alignItems: 'center', gap: '10px', maxWidth: '260px', margin: '0 auto 28px' },
-      heroContentStyle: { position: 'relative', zIndex: 2, textAlign: 'center', padding: isMobile ? '0 18px' : '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
+      heroContentStyle: {
+        position: 'relative', zIndex: 2, textAlign: 'center', padding: isMobile ? '0 18px' : '0 24px',
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        transform: isMobile ? 'translateY(18vh)' : 'translateY(8vh)',
+      },
       heroKickerStyle: { fontFamily: 'Inter, sans-serif', fontSize: '13px', letterSpacing: '0.2em', textTransform: 'uppercase', color: c.salvia300, marginBottom: '20px' },
       heroTitleStyle: { fontFamily: "'Great Vibes', cursive", fontSize: 'clamp(52px, 15vw, 108px)', color: dark ? c.arena50 : c.bg, lineHeight: 1.06, marginBottom: '20px', padding: isMobile ? '0 6px' : 0 },
       heroDateStyle: { fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(20px, 3vw, 28px)', color: dark ? c.arena100 : c.bg2, marginBottom: '8px', fontWeight: 400 },
