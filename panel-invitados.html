@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel de invitados</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  body{font-family:'Cormorant Garamond',serif;background:#FDF6F5;color:#3B3134;max-width:900px;margin:40px auto;padding:0 20px;}
+  input{font:inherit;padding:10px 14px;border:1px solid #ccc;border-radius:8px;width:220px;}
+  button{font:inherit;padding:10px 18px;border:none;border-radius:8px;background:#8AA096;color:white;cursor:pointer;margin-left:8px;}
+  table{width:100%;border-collapse:collapse;margin-top:24px;font-size:15px;}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #e5dcd9;}
+  th{color:#6F8A80;}
+  .error{color:#b3453f;margin-top:10px;}
+</style>
+</head>
+<body>
+  <h1>Panel de invitados</h1>
+  <div id="login">
+    <input id="pass" type="password" placeholder="Contraseña" autofocus>
+    <button id="entrar">Entrar</button>
+    <p class="error" id="err" style="display:none">Contraseña incorrecta.</p>
+  </div>
+  <div id="panel" style="display:none">
+    <p><strong id="total"></strong> · <button id="csv">Descargar CSV</button> <button id="refrescar">Actualizar</button></p>
+    <table>
+      <thead><tr><th>Nombre</th><th>Preboda</th><th>Boda</th><th>Comida</th><th>Menú</th><th>Alergias</th><th>Comentarios</th><th>Fecha</th></tr></thead>
+      <tbody id="filas"></tbody>
+    </table>
+  </div>
+<script>
+const ENDPOINT = 'https://mifjzlmvfuhrxipnfwqu.supabase.co/functions/v1/rsvp-list';
+let ultimaLista = [];
+
+async function cargar(pass) {
+  const r = await fetch(ENDPOINT, { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ password: pass }) });
+  if (!r.ok) { document.getElementById('err').style.display = 'block'; return; }
+  const { invitados } = await r.json();
+  ultimaLista = invitados;
+  sessionStorage.setItem('panelPass', pass);
+  render(invitados);
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('panel').style.display = 'block';
+}
+
+function render(invitados) {
+  document.getElementById('total').textContent = `${invitados.length} confirmaciones`;
+  document.getElementById('filas').innerHTML = invitados.map(i => `
+    <tr><td>${i.nombre}</td><td>${i.preboda ? 'sí':'no'}</td><td>${i.boda ? 'sí':'no'}</td><td>${i.comida ? 'sí':'no'}</td>
+    <td>${i.menu}</td><td>${i.alergias || '—'}</td><td>${i.comentarios || '—'}</td>
+    <td>${new Date(i.created_at).toLocaleDateString('es-ES')}</td></tr>`).join('');
+}
+
+document.getElementById('entrar').onclick = () => cargar(document.getElementById('pass').value);
+document.getElementById('refrescar').onclick = () => cargar(sessionStorage.getItem('panelPass'));
+document.getElementById('csv').onclick = () => {
+  const filas = [['nombre','preboda','boda','comida','menu','alergias','comentarios','fecha'],
+    ...ultimaLista.map(i => [i.nombre,i.preboda,i.boda,i.comida,i.menu,i.alergias||'',i.comentarios||'',i.created_at])];
+  const csv = filas.map(f => f.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = 'invitados.csv'; a.click();
+};
+
+// si ya entró en esta pestaña, no pedir contraseña otra vez
+const previa = sessionStorage.getItem('panelPass');
+if (previa) cargar(previa);
+</script>
+</body>
+</html>
