@@ -1053,7 +1053,7 @@ class Component extends DCLogic {
         position: 'relative', zIndex: 2,
         height: isMobile ? '100svh' : '100vh',
         minHeight: isMobile ? '560px' : '640px',
-        display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
         overflow: 'hidden',
       },
       heroMediaStyle: { position: 'absolute', inset: 0, background: dark ? '#0F1112' : '#F7ECEB', overflow: 'hidden' },
@@ -1086,11 +1086,7 @@ class Component extends DCLogic {
       heroTitleStyle: { fontFamily: "'Great Vibes', cursive", fontSize: 'clamp(52px, 15vw, 108px)', color: dark ? c.arena50 : c.bg, lineHeight: 1.06, marginBottom: '20px', padding: isMobile ? '0 6px' : 0 },
       heroDateStyle: { fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(20px, 3vw, 28px)', color: dark ? c.arena100 : c.bg2, marginBottom: '8px', fontWeight: 400 },
       heroLocStyle: { fontFamily: 'Inter, sans-serif', fontSize: '14px', color: dark ? c.arena100 : c.bg2, opacity: 0.8, marginBottom: '40px' },
-      heroCtaStyle: {
-        fontFamily: 'Inter, sans-serif', fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase',
-        color: '#FFFCFC', background: `linear-gradient(135deg, ${c.salvia500}, ${c.salvia700})`, padding: '16px 40px', borderRadius: '32px',
-        textDecoration: 'none', boxShadow: `0 4px 16px rgba(143,168,158,0.3)`,
-      },
+
       scrollIndicatorStyle: { position: 'absolute', bottom: '32px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 2 },
       scrollDotStyle: { width: '6px', height: '6px', borderRadius: '50%', background: c.salvia500, animation: 'bounce 1.6s ease-in-out infinite' },
 
